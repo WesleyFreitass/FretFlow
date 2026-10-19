@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FretFlow Desktop - Visual Exato da Aplicação</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            fret: {
+              dark: '#080c14',
+              card: '#111827',
+              inner: '#090d16',
+              border: '#1e293b',
+              accent: '#38bdf8',
+              emerald: '#10b981',
+              neonPurple: '#a855f7',
+              amber: '#f59e0b'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;900&display=swap');
+    
+    body {
+      background-color: #080c14;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090d16;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Wooden fretboard background */
+    .fretboard-wood {
+      background: linear-gradient(180deg, #2b1704 0%, #3d230a 35%, #2a1603 70%, #1c0e02 100%);
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.85);
+    }
+
+    .highway-3d {
+      perspective: 500px;
+    }
+    .highway-plane {
+      transform: rotateX(45deg);
+      transform-origin: bottom center;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- ========================================================================= -->
+  <!-- TOP APP HEADER -->
+  <!-- ========================================================================= -->
+  <header class="h-16 bg-[#0d131f] border-b border-slate-800 flex items-center justify-between px-6 sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 shadow-lg shadow-emerald-500/20 font-black text-xl">
+        🎸
+      </div>
+      <div>
+        <h1 class="text-base font-black tracking-wider text-white flex items-center gap-2">
+          <span>FretFlow</span>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-extrabold px-2 py-0.5 rounded-full border border-emerald-500/30">
+            DESKTOP PRO
+          </span>
+        </h1>
+        <p class="text-[11px] text-slate-400">Estúdio Inteligente de Guitarra, Efeitos DSP & Aprendizado</p>
+      </div>
+    </div>
+
+    <!-- Right Controls / Audio Signal Meter -->
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 bg-[#090d16] px-3.5 py-1.5 rounded-2xl border border-slate-800">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-xs font-bold text-slate-300">Guitarra Conectada (Input 1)</span>
+        <div class="w-16 h-2 bg-slate-800 rounded-full overflow-hidden ml-1">
+          <div class="h-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-rose-500 w-3/4 rounded-full"></div>
+        </div>
+      </div>
+
+      <button onclick="toggleAudio()" id="audio-toggle-btn" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition flex items-center gap-1.5">
+        <span>🔊 Áudio Ativo</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN APP CONTAINER (SIDEBAR + ACTIVE TAB VIEWPORT) -->
+  <!-- ========================================================================= -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- SIDEBAR NAVIGATION (REORDERED EXACTLY AS REQUESTED) -->
+    <aside class="w-64 bg-[#0d131f] border-r border-slate-800 p-4 flex flex-col justify-between space-y-6 shrink-0">
+      
+      <div class="space-y-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">Módulos & Ferramentas</div>
+
+        <!-- 1. Afinador -->
+        <button onclick="switchTab('tuner')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60" data-tab="tuner">
+          <span class="text-base">📻</span>
+          <span>Afinador & Prática</span>
+        </button>
+
+        <!-- 2. Pedaleira -->
+        <button onclick="switchTab('pedalboard')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60" data-tab="pedalboard">
+          <span class="text-base">🔥</span>
+          <span>Pedaleira & Efeitos</span>
+        </button>
+
+        <!-- 3. Treino Acordes (Default Selected) -->
+        <button onclick="switchTab('trainer')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 bg-emerald-500 text-slate-950 font-black shadow-md shadow-emerald-500/20" data-tab="trainer">
+          <span class="text-base">✨</span>
+          <span>Treino de Acordes</span>
+        </button>
+
+        <!-- 4. Trilha & Métodos -->
+        <button onclick="switchTab('methods')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60" data-tab="methods">
+          <span class="text-base">🎓</span>
+          <span>Trilha & Métodos</span>
+        </button>
+
+        <!-- 5. Escalas & Modos -->
+        <button onclick="switchTab('scales')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60" data-tab="scales">
+          <span class="text-base">🧭</span>
+          <span>Escalas & Modos</span>
+        </button>
+
+        <!-- 6. Guitar Pro Tabs -->
+        <button onclick="switchTab('guitarpro')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60" data-tab="guitarpro">
+          <span class="text-base">📄</span>
+          <span>Guitar Pro Tabs</span>
+        </button>
+
+        <!-- 7. Guitar Hero Arcade -->
+        <button onclick="switchTab('hero')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60" data-tab="hero">
+          <span class="text-base">🎮</span>
+          <span>Guitar Hero Arcade</span>
+        </button>
+
+        <!-- 8. Modo YouTube -->
+        <button onclick="switchTab('youtube')" class="tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60" data-tab="youtube">
+          <span class="text-base">🎬</span>
+          <span>Modo YouTube</span>
+        </button>
+      </div>
+
+      <!-- Footer Audio Status Card -->
+      <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-3.5 space-y-2 text-xs">
+        <div class="flex items-center justify-between text-slate-400 font-bold">
+          <span>Direct Monitoring:</span>
+          <span class="text-emerald-400">Ativo (0ms)</span>
+        </div>
+        <div class="flex items-center justify-between text-slate-400 font-bold">
+          <span>Noise Gate:</span>
+          <span class="text-emerald-400">Silêncio Total</span>
+        </div>
+        <div class="flex items-center justify-between text-slate-400 font-bold">
+          <span>Latência:</span>
+          <span class="text-sky-400 font-mono">5.2 ms</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- VIEWPORT STAGE FOR TABS -->
+    <main class="flex-1 p-6 overflow-y-auto custom-scrollbar bg-[#080c14]">
+
+      <!-- ========================================================================= -->
+      <!-- 1. TAB: AFINADOR & PRÁTICA -->
+      <!-- ========================================================================= -->
+      <div id="tab-tuner" class="tab-content hidden space-y-6 max-w-5xl mx-auto">
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-2">
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+            <span>📻 Afinador Cromático de Alta Precisão</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+              DSP VETORIAL
+            </span>
+          </h2>
+          <p class="text-xs text-slate-400">Detecção harmônica de tom fundamental com medidor analógico em cents e leitura em Hertz</p>
+        </div>
+
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-8 shadow-xl text-center space-y-6">
+          <div class="inline-block px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-black text-xs">
+            🎯 AFINADO PERFEITO (0 CENTS)
+          </div>
+
+          <div class="text-8xl font-black font-mono text-emerald-400 tracking-tighter">
+            E<span class="text-3xl text-slate-500 font-normal">2</span>
+          </div>
+          <div class="text-sm font-mono text-slate-400 font-bold">82.41 Hz • 6ª Corda Mi Grave</div>
+
+          <!-- Arc Gauge Needle -->
+          <div class="max-w-lg mx-auto relative pt-4">
+            <div class="h-4 bg-slate-800 rounded-full relative overflow-hidden p-0.5 border border-slate-700">
+              <div class="absolute left-1/2 top-0 bottom-0 w-1.5 bg-emerald-400 z-10 -translate-x-1/2 shadow-lg shadow-emerald-400"></div>
+              <div class="h-full bg-emerald-500 w-1/2 rounded-full"></div>
+            </div>
+            <div class="flex justify-between text-xs font-mono font-bold text-slate-500 mt-2.5">
+              <span>-50¢ (Muito Grave)</span>
+              <span class="text-emerald-400 font-black">0¢ (Afinado)</span>
+              <span>+50¢ (Muito Agudo)</span>
+            </div>
+          </div>
+
+          <!-- 6 Strings Selector -->
+          <div class="flex flex-wrap justify-center gap-2.5 pt-4 border-t border-slate-800">
+            <button class="px-4 py-2.5 rounded-2xl text-xs font-mono font-black bg-emerald-500 text-slate-950 shadow-md">6ª E (82Hz)</button>
+            <button class="px-4 py-2.5 rounded-2xl text-xs font-mono font-bold bg-[#090d16] text-slate-300 border border-slate-800 hover:border-slate-700">5ª A (110Hz)</button>
+            <button class="px-4 py-2.5 rounded-2xl text-xs font-mono font-bold bg-[#090d16] text-slate-300 border border-slate-800 hover:border-slate-700">4ª D (147Hz)</button>
+            <button class="px-4 py-2.5 rounded-2xl text-xs font-mono font-bold bg-[#090d16] text-slate-300 border border-slate-800 hover:border-slate-700">3ª G (196Hz)</button>
+            <button class="px-4 py-2.5 rounded-2xl text-xs font-mono font-bold bg-[#090d16] text-slate-300 border border-slate-800 hover:border-slate-700">2ª B (247Hz)</button>
+            <button class="px-4 py-2.5 rounded-2xl text-xs font-mono font-bold bg-[#090d16] text-slate-300 border border-slate-800 hover:border-slate-700">1ª e (330Hz)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 2. TAB: PEDALEIRA & EFEITOS -->
+      <!-- ========================================================================= -->
+      <div id="tab-pedalboard" class="tab-content hidden space-y-6 max-w-6xl mx-auto">
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span>🔥 Pedaleira de Estúdio Analógica (10 Pedais DSP)</span>
+            </h2>
+            <p class="text-xs text-slate-400">Filtros, saturações analógicas de válvula 12AX7, modulações clássicas e delay estéreo</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-3.5 py-1.5 bg-emerald-500 text-slate-950 text-xs font-black rounded-xl">🎸 Som Natural (Clean)</button>
+            <button class="px-3.5 py-1.5 bg-slate-800 text-slate-200 text-xs font-bold rounded-xl border border-slate-700">⚡ Eddie Van Halen</button>
+            <button class="px-3.5 py-1.5 bg-slate-800 text-slate-200 text-xs font-bold rounded-xl border border-slate-700">🚀 The Police</button>
+            <button class="px-3.5 py-1.5 bg-slate-800 text-slate-200 text-xs font-bold rounded-xl border border-slate-700">🔥 Jimi Hendrix</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <!-- Pedal 1: Noise Gate -->
+          <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 space-y-3 relative shadow-lg">
+            <div class="flex justify-between items-center">
+              <strong class="text-xs font-black text-slate-200 uppercase">Noise Gate</strong>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+            </div>
+            <div class="h-20 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-full border-4 border-slate-700 flex items-center justify-center font-mono text-[10px] text-emerald-400 font-bold">
+                0.015
+              </div>
+            </div>
+            <button class="w-full py-1.5 bg-emerald-500 text-slate-950 font-black text-xs rounded-xl">LIGADO</button>
+          </div>
+
+          <!-- Pedal 2: Tube Screamer -->
+          <div class="bg-[#064e3b] border border-emerald-700/60 rounded-2xl p-4 space-y-3 relative shadow-lg">
+            <div class="flex justify-between items-center">
+              <strong class="text-xs font-black text-emerald-200 uppercase">TS-808 Drive</strong>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+            </div>
+            <div class="h-20 flex items-center justify-center gap-2">
+              <div class="w-10 h-10 rounded-full border-2 border-emerald-400 flex items-center justify-center font-mono text-[9px] text-emerald-200 font-bold">
+                DRV
+              </div>
+              <div class="w-10 h-10 rounded-full border-2 border-emerald-400 flex items-center justify-center font-mono text-[9px] text-emerald-200 font-bold">
+                TONE
+              </div>
+            </div>
+            <button class="w-full py-1.5 bg-emerald-400 text-slate-950 font-black text-xs rounded-xl">LIGADO</button>
+          </div>
+
+          <!-- Pedal 3: Phase 90 -->
+          <div class="bg-[#7c2d12] border border-orange-700/60 rounded-2xl p-4 space-y-3 relative shadow-lg">
+            <div class="flex justify-between items-center">
+              <strong class="text-xs font-black text-orange-200 uppercase">MXR Phase 90</strong>
+              <span class="w-2.5 h-2.5 rounded-full bg-orange-400 shadow-sm shadow-orange-400"></span>
+            </div>
+            <div class="h-20 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-full border-4 border-orange-400 flex items-center justify-center font-mono text-[10px] text-orange-200 font-bold">
+                SPEED
+              </div>
+            </div>
+            <button class="w-full py-1.5 bg-orange-500 text-slate-950 font-black text-xs rounded-xl">LIGADO</button>
+          </div>
+
+          <!-- Pedal 4: Flanger -->
+          <div class="bg-[#581c87] border border-purple-700/60 rounded-2xl p-4 space-y-3 relative shadow-lg">
+            <div class="flex justify-between items-center">
+              <strong class="text-xs font-black text-purple-200 uppercase">BF-2 Flanger</strong>
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+            </div>
+            <div class="h-20 flex items-center justify-center gap-2">
+              <div class="w-10 h-10 rounded-full border-2 border-purple-400 flex items-center justify-center font-mono text-[9px] text-purple-200 font-bold">RATE</div>
+              <div class="w-10 h-10 rounded-full border-2 border-purple-400 flex items-center justify-center font-mono text-[9px] text-purple-200 font-bold">DEPTH</div>
+            </div>
+            <button class="w-full py-1.5 bg-slate-800 text-slate-400 font-bold text-xs rounded-xl">BYPASS</button>
+          </div>
+
+          <!-- Pedal 5: Tube Amp -->
+          <div class="bg-[#18181b] border border-amber-600/40 rounded-2xl p-4 space-y-3 relative shadow-lg">
+            <div class="flex justify-between items-center">
+              <strong class="text-xs font-black text-amber-300 uppercase">'65 Twin Reverb</strong>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-sm shadow-amber-400"></span>
+            </div>
+            <div class="h-20 flex items-center justify-center">
+              <span class="text-3xl">📻</span>
+            </div>
+            <button class="w-full py-1.5 bg-amber-500 text-slate-950 font-black text-xs rounded-xl">CAB 2x12</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 3. TAB: TREINO DE ACORDES (ACTIVE DEFAULT) -->
+      <!-- ========================================================================= -->
+      <div id="tab-trainer" class="tab-content space-y-6 max-w-6xl mx-auto">
+        
+        <!-- Header -->
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span>✨ Treinador & Diagnóstico de Acordes</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                MODO DIDÁTICO
+              </span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">
+              Visualize as cifras, nomes em português, posicionamento dos dedos e receba avaliação em tempo real
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 rounded-xl text-xs font-black bg-emerald-500 text-slate-950 shadow-md">Treino Livre & Diagnóstico</button>
+            <button class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 bg-[#090d16] border border-slate-800">Troca no Compasso</button>
+          </div>
+        </div>
+
+        <!-- Categories & Rich Chord Selector -->
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Categorias de Estudo Sugeridas:</span>
+            <input type="text" placeholder="Buscar acorde (ex: Dó, Em, Pestana)..." class="bg-[#090d16] border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400">
+          </div>
+
+          <!-- Category Pills -->
+          <div class="flex flex-wrap gap-2">
+            <button class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-emerald-500 text-slate-950">🌱 Essenciais Iniciante</button>
+            <button class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#090d16] text-slate-300 border border-slate-800">🎸 Menores Emotivos</button>
+            <button class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#090d16] text-slate-300 border border-slate-800">🔒 O Desafio da Pestana</button>
+            <button class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#090d16] text-slate-300 border border-slate-800">⚡ Power Chords (Rock)</button>
+            <button class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#090d16] text-slate-300 border border-slate-800">🎷 Acordes com 7ª</button>
+          </div>
+
+          <!-- Rich Chord Cards Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 pt-1">
+            <!-- Card C (Selected) -->
+            <div class="p-3 rounded-2xl border bg-gradient-to-b from-emerald-950/90 to-[#0a1814] border-emerald-400 shadow-lg shadow-emerald-500/20 scale-105 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono text-emerald-300">C</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🌱 Básico</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1">Dó Maior</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">3 Dedos</p>
+            </div>
+
+            <!-- Card D -->
+            <div class="p-3 rounded-2xl border bg-[#090d16] border-slate-800 hover:border-slate-700 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono text-white">D</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🌱 Básico</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1">Ré Maior</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">3 Dedos</p>
+            </div>
+
+            <!-- Card E -->
+            <div class="p-3 rounded-2xl border bg-[#090d16] border-slate-800 hover:border-slate-700 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono text-white">E</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🌱 Básico</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1">Mi Maior</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">3 Dedos</p>
+            </div>
+
+            <!-- Card G -->
+            <div class="p-3 rounded-2xl border bg-[#090d16] border-slate-800 hover:border-slate-700 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono text-white">G</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🌱 Básico</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1">Sol Maior</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">4 Dedos</p>
+            </div>
+
+            <!-- Card A -->
+            <div class="p-3 rounded-2xl border bg-[#090d16] border-slate-800 hover:border-slate-700 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono text-white">A</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🌱 Básico</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1">Lá Maior</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">3 Dedos</p>
+            </div>
+
+            <!-- Card Em -->
+            <div class="p-3 rounded-2xl border bg-[#090d16] border-slate-800 hover:border-slate-700 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono text-white">Em</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🌱 Básico</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1">Mi Menor</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">2 Dedos</p>
+            </div>
+
+            <!-- Card Am -->
+            <div class="p-3 rounded-2xl border bg-[#090d16] border-slate-800 hover:border-slate-700 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono text-white">Am</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🌱 Básico</span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1">Lá Menor</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">3 Dedos</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage: Coach Card + Classic Wooden Fretboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Coach Card (5 cols) -->
+          <div class="lg:col-span-5 bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Acorde Ativo</span>
+                <div class="text-4xl font-black text-white font-mono flex items-baseline gap-2 mt-0.5">
+                  <span>C</span>
+                  <span class="text-sm font-bold text-emerald-400">(Dó Maior)</span>
+                </div>
+              </div>
+              <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 font-bold text-xs rounded-full border border-emerald-500/30">
+                Fácil (3 dedos)
+              </span>
+            </div>
+
+            <!-- Strum Alert -->
+            <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-3.5 flex items-center gap-3 text-xs">
+              <span class="text-xl">🎯</span>
+              <div>
+                <span class="font-bold text-white block">Como Palhetar:</span>
+                <span class="text-slate-300">Toque a partir da 5ª corda (Lá) para baixo. Mute a 6ª corda.</span>
+              </div>
+            </div>
+
+            <!-- Diagnostic Box -->
+            <div class="p-4 rounded-xl border bg-emerald-950/40 border-emerald-500/60 text-emerald-200 space-y-1">
+              <div class="text-xs font-extrabold flex items-center gap-1.5">
+                🎯 Acorde Perfeito & Limpo! (98% Precisão)
+              </div>
+              <p class="text-[11px] opacity-90 leading-relaxed">
+                Excelente! Todas as notas essenciais (C - E - G) estão soando límpidas e afinadas.
+              </p>
+            </div>
+
+            <!-- Finger Guide -->
+            <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                🖐️ Guia de Dedos da Mão Esquerda:
+              </span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-[#111827] p-2 rounded-xl border border-rose-500/30 flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full bg-rose-500 text-white font-black flex items-center justify-center text-[10px]">1</span>
+                  <div>
+                    <strong class="text-rose-300 block text-[10px]">Indicador</strong>
+                    <span class="text-[10px] text-slate-400">2ª Corda (Casa 1)</span>
+                  </div>
+                </div>
+                <div class="bg-[#111827] p-2 rounded-xl border border-amber-500/30 flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black flex items-center justify-center text-[10px]">2</span>
+                  <div>
+                    <strong class="text-amber-300 block text-[10px]">Médio</strong>
+                    <span class="text-[10px] text-slate-400">4ª Corda (Casa 2)</span>
+                  </div>
+                </div>
+                <div class="bg-[#111827] p-2 rounded-xl border border-sky-500/30 flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full bg-sky-400 text-slate-950 font-black flex items-center justify-center text-[10px]">3</span>
+                  <div>
+                    <strong class="text-sky-300 block text-[10px]">Anelar</strong>
+                    <span class="text-[10px] text-slate-400">5ª Corda (Casa 3)</span>
+                  </div>
+                </div>
+                <div class="bg-[#111827] p-2 rounded-xl border border-purple-500/30 flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full bg-purple-400 text-white font-black flex items-center justify-center text-[10px]">4</span>
+                  <div>
+                    <strong class="text-purple-300 block text-[10px]">Mínimo</strong>
+                    <span class="text-[10px] text-slate-400">Livre</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wooden Fretboard Diagram (7 cols) - KEPT EXACT PROVEN STYLE -->
+          <div class="lg:col-span-7 bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-extrabold text-slate-300">Posição dos Dedos no Braço:</span>
+                <span class="text-xs text-slate-500">1: Indicador | 2: Médio | 3: Anelar | 4: Mínimo</span>
+              </div>
+
+              <!-- Wooden Canvas -->
+              <div class="fretboard-wood rounded-2xl p-6 border-4 border-[#1c0e02] shadow-2xl relative overflow-hidden">
+                
+                <!-- Open / Muted Strings Header -->
+                <div class="flex justify-between text-center font-mono font-black text-xs mb-3 px-3">
+                  <span class="text-rose-400">✕</span>
+                  <span class="text-slate-400"></span>
+                  <span class="text-emerald-400">○</span>
+                  <span class="text-slate-400"></span>
+                  <span class="text-slate-400"></span>
+                  <span class="text-emerald-400">○</span>
+                </div>
+
+                <!-- Fretboard Grid (6 strings) -->
+                <div class="space-y-4 relative py-2">
+                  <!-- String 1 e -->
+                  <div class="relative flex items-center h-5">
+                    <div class="w-full bg-slate-300 h-[1.5px] opacity-70 shadow"></div>
+                  </div>
+                  <!-- String 2 B (Dedo 1 na Casa 1) -->
+                  <div class="relative flex items-center h-5">
+                    <div class="w-full bg-slate-300 h-[2px] opacity-70 shadow"></div>
+                    <div class="absolute left-[16%] -translate-x-1/2 w-6 h-6 rounded-full bg-rose-500 text-white font-black font-mono text-xs flex items-center justify-center shadow-lg border-2 border-white">1</div>
+                  </div>
+                  <!-- String 3 G -->
+                  <div class="relative flex items-center h-5">
+                    <div class="w-full bg-slate-400 h-[2.5px] opacity-75 shadow"></div>
+                  </div>
+                  <!-- String 4 D (Dedo 2 na Casa 2) -->
+                  <div class="relative flex items-center h-5">
+                    <div class="w-full bg-amber-600 h-[3.2px] opacity-80 shadow"></div>
+                    <div class="absolute left-[45%] -translate-x-1/2 w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black font-mono text-xs flex items-center justify-center shadow-lg border-2 border-white">2</div>
+                  </div>
+                  <!-- String 5 A (Dedo 3 na Casa 3) -->
+                  <div class="relative flex items-center h-5">
+                    <div class="w-full bg-amber-600 h-[4px] opacity-85 shadow"></div>
+                    <div class="absolute left-[78%] -translate-x-1/2 w-6 h-6 rounded-full bg-sky-400 text-slate-950 font-black font-mono text-xs flex items-center justify-center shadow-lg border-2 border-white">3</div>
+                  </div>
+                  <!-- String 6 E (Abafada) -->
+                  <div class="relative flex items-center h-5">
+                    <div class="w-full bg-amber-700 h-[5px] opacity-90 shadow"></div>
+                  </div>
+                </div>
+
+                <!-- Fret Numbers Below -->
+                <div class="grid grid-cols-4 text-center font-mono font-bold text-xs text-amber-200/60 pt-3 border-t border-amber-950">
+                  <span>Nut</span>
+                  <span>Casa 1</span>
+                  <span>Casa 2</span>
+                  <span>Casa 3</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes in Chord Badges -->
+            <div class="bg-[#090d16] p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between">
+              <span class="text-xs text-slate-400 font-bold">Notas que compõem o acorde:</span>
+              <div class="flex gap-2">
+                <span class="px-3 py-1 rounded-xl text-xs font-mono font-black bg-emerald-500 text-slate-950 border border-emerald-300 shadow">C ✓</span>
+                <span class="px-3 py-1 rounded-xl text-xs font-mono font-black bg-emerald-500 text-slate-950 border border-emerald-300 shadow">E ✓</span>
+                <span class="px-3 py-1 rounded-xl text-xs font-mono font-black bg-emerald-500 text-slate-950 border border-emerald-300 shadow">G ✓</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 4. TAB: TRILHA & MÉTODOS -->
+      <!-- ========================================================================= -->
+      <div id="tab-methods" class="tab-content hidden space-y-6 max-w-6xl mx-auto">
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span>🎓 Trilha do Zero ao Domínio (14 Etapas)</span>
+            </h2>
+            <p class="text-xs text-slate-400">Progresso metódico estruturado em 5 fases do curso completo</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 font-bold block">Progresso Geral</span>
+            <span class="text-lg font-black text-emerald-400">Etapa 03 / 14</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-4 space-y-2">
+            <span class="text-2xl">⚡</span>
+            <h4 class="text-xs font-black text-white">Speed Trainer 1-2-3-4</h4>
+            <p class="text-[11px] text-slate-400">Aceleração automática +2 BPM</p>
+          </div>
+          <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-4 space-y-2">
+            <span class="text-2xl">🎵</span>
+            <h4 class="text-xs font-black text-white">Treinador de Levadas</h4>
+            <p class="text-[11px] text-slate-400">Setas ⬇️ ⬆️ e Ghost Notes</p>
+          </div>
+          <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-4 space-y-2">
+            <span class="text-2xl">🎸</span>
+            <h4 class="text-xs font-black text-white">Rock Gym</h4>
+            <p class="text-[11px] text-slate-400">Power Chords & Palm Muting</p>
+          </div>
+          <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-4 space-y-2">
+            <span class="text-2xl">🔒</span>
+            <h4 class="text-xs font-black text-white">Teste de Pestana</h4>
+            <p class="text-[11px] text-slate-400">Clareza corda por corda</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 5. TAB: ESCALAS & MODOS GREGOS -->
+      <!-- ========================================================================= -->
+      <div id="tab-scales" class="tab-content hidden space-y-6 max-w-6xl mx-auto">
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span>🧭 Visualizador de Escalas & Modos (24 Casas)</span>
+            </h2>
+            <div class="flex gap-2">
+              <button class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-cyan-500 text-slate-950">A Menor Blues</button>
+              <button class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#090d16] text-slate-300 border border-slate-800">Modo Dórico</button>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400">A Blue Note (b5) em destaque azul celeste neon vibrante em todo o braço</p>
+        </div>
+
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl overflow-x-auto custom-scrollbar">
+          <div class="min-w-[800px] bg-[#090d16] p-4 rounded-2xl border border-slate-800 space-y-3">
+            <div class="flex justify-between text-[10px] font-mono text-slate-500">
+              <span>Solta</span>
+              <span>Casa 3</span>
+              <span>Casa 5</span>
+              <span>Casa 7</span>
+              <span>Casa 9</span>
+              <span class="text-cyan-400 font-black">Casa 12 (Oitava)</span>
+              <span>Casa 15</span>
+              <span>Casa 17</span>
+              <span>Casa 24</span>
+            </div>
+            <div class="h-28 flex flex-col justify-between relative py-2">
+              <div class="w-full h-[1.5px] bg-slate-600"></div>
+              <div class="w-full h-[2px] bg-slate-600"></div>
+              <div class="w-full h-[2.5px] bg-slate-600"></div>
+              <div class="w-full h-[3.2px] bg-slate-600"></div>
+              <div class="w-full h-[4px] bg-slate-600"></div>
+              <div class="w-full h-[5px] bg-slate-600"></div>
+              <div class="absolute left-[35%] top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-full bg-cyan-400 text-slate-950 font-mono font-black text-xs shadow-lg shadow-cyan-400/50 animate-pulse">
+                Eb (b5 Blue Note)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 6. TAB: GUITAR PRO TABS -->
+      <!-- ========================================================================= -->
+      <div id="tab-guitarpro" class="tab-content hidden space-y-6 max-w-6xl mx-auto">
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span>📄 Leitor Guitar Pro Tabs (AlphaTab Vector Score)</span>
+            </h2>
+            <p class="text-xs text-slate-400">Partitura e tablatura simultâneas com controle de velocidade e cursor em tempo real</p>
+          </div>
+          <button class="px-4 py-2 bg-slate-800 text-slate-200 text-xs font-bold rounded-xl border border-slate-700">
+            📁 Abrir .GP5 do PC
+          </button>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 text-slate-900 shadow-2xl min-h-[400px] flex flex-col justify-between font-mono">
+          <div class="space-y-4">
+            <h3 class="text-lg font-black">Aula 20: Exercícios de Coordenação & Técnica (Team Alabama)</h3>
+            <div class="border-y-2 border-slate-900 py-6 space-y-2">
+              <div class="flex justify-between text-sm font-bold">
+                <span>E |-----------------------------------|</span>
+                <span>B |-----------------------------------|</span>
+                <span>G |-------------------5-7-8-----------|</span>
+                <span>D |-------------5-7-8-----------------|</span>
+                <span>A |-------5-7-8-----------------------|</span>
+                <span>E |-5-7-8-----------------------------|</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-xs text-slate-500 flex justify-between pt-4 border-t border-slate-200">
+            <span>Andamento: 120 BPM | Compasso 4/4</span>
+            <span class="text-emerald-600 font-bold">Cursor Sincronizado</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 7. TAB: GUITAR HERO ARCADE -->
+      <!-- ========================================================================= -->
+      <div id="tab-hero" class="tab-content hidden space-y-6 max-w-6xl mx-auto">
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-black text-white flex items-center gap-2">
+              <span>🎮 Guitar Hero Arcade (Pista 6 Cordas)</span>
+            </h2>
+            <p class="text-xs text-slate-400">Notas com casas reais e acordes inteiros sincronizados com a música oficial</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-black text-amber-400">STAR POWER 8x</span>
+            <span class="text-sm font-black font-mono text-emerald-400">Score: 48,500</span>
+          </div>
+        </div>
+
+        <div class="bg-[#090d16] border border-slate-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden h-[450px] flex items-center justify-center">
+          <div class="highway-3d w-full max-w-lg h-full flex items-center justify-center">
+            <div class="highway-plane w-full h-[380px] bg-gradient-to-t from-slate-950 via-[#0f172a] to-transparent border-x-4 border-cyan-500/40 relative shadow-2xl flex flex-col justify-between p-4">
+              <div class="flex justify-between h-full opacity-30">
+                <div class="w-[1px] bg-red-400 h-full"></div>
+                <div class="w-[1px] bg-yellow-400 h-full"></div>
+                <div class="w-[1px] bg-blue-400 h-full"></div>
+                <div class="w-[1px] bg-orange-400 h-full"></div>
+                <div class="w-[1px] bg-green-400 h-full"></div>
+                <div class="w-[1px] bg-purple-400 h-full"></div>
+              </div>
+              <div class="absolute left-6 right-6 top-1/2 h-3 bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full shadow-lg shadow-cyan-400/80 flex items-center justify-center">
+                <span class="bg-slate-950 text-white font-mono font-black text-[10px] px-2 py-0.5 rounded border border-cyan-400">[ C Major ]</span>
+              </div>
+              <div class="w-full h-2 bg-white rounded-full shadow-lg shadow-white/80"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- 8. TAB: MODO YOUTUBE -->
+      <!-- ========================================================================= -->
+      <div id="tab-youtube" class="tab-content hidden space-y-6 max-w-6xl mx-auto">
+        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <h2 class="text-xl font-black text-white flex items-center gap-2">
+            <span>🎬 Modo YouTube & Cifras Sincronizadas</span>
+          </h2>
+          <p class="text-xs text-slate-400">Toque junto com qualquer clipe oficial ou aula do YouTube</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-6 bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl aspect-video flex items-center justify-center bg-black">
+            <span class="text-slate-500 font-bold text-sm">▶️ Player de Vídeo Oficial do YouTube</span>
+          </div>
+          <div class="lg:col-span-6 bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 flex flex-col justify-between">
+            <h3 class="text-base font-black text-white">Hotel California - Eagles</h3>
+            <div class="grid grid-cols-4 gap-2">
+              <div class="p-3 bg-emerald-500/20 border border-emerald-400 rounded-xl text-center">
+                <span class="text-lg font-black font-mono text-emerald-300">Bm</span>
+                <span class="text-[10px] text-slate-400 block">Atual</span>
+              </div>
+              <div class="p-3 bg-[#090d16] border border-slate-800 rounded-xl text-center">
+                <span class="text-lg font-black font-mono text-white">F#</span>
+                <span class="text-[10px] text-slate-400 block">Próximo</span>
+              </div>
+              <div class="p-3 bg-[#090d16] border border-slate-800 rounded-xl text-center">
+                <span class="text-lg font-black font-mono text-white">A</span>
+                <span class="text-[10px] text-slate-400 block">Próximo</span>
+              </div>
+              <div class="p-3 bg-[#090d16] border border-slate-800 rounded-xl text-center">
+                <span class="text-lg font-black font-mono text-white">E</span>
+                <span class="text-[10px] text-slate-400 block">Próximo</span>
+              </div>
+            </div>
+            <button class="w-full py-2.5 bg-rose-500 text-white font-black text-xs rounded-xl shadow-lg shadow-rose-500/20">
+              Iniciar Playalong
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Tab switching engine
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeStage = document.getElementById(`tab-${tabId}`);
+      if (activeStage) activeStage.classList.remove('hidden');
+
+      document.querySelectorAll('.tab-nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.className = 'tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-black transition flex items-center gap-3 bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20';
+        } else {
+          btn.className = 'tab-nav-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-3 text-slate-300 hover:bg-slate-800/60';
+        }
+      });
+    }
+
+    let isAudioOn = true;
+    function toggleAudio() {
+      isAudioOn = !isAudioOn;
+      const btn = document.getElementById('audio-toggle-btn');
+      if (isAudioOn) {
+        btn.innerHTML = '<span>🔊 Áudio Ativo</span>';
+        btn.className = 'px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition flex items-center gap-1.5';
+      } else {
+        btn.innerHTML = '<span>🔇 Áudio Mudo</span>';
+        btn.className = 'px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl border border-slate-700 transition flex items-center gap-1.5';
+      }
+    }
+  </script>
+</body>
+</html>

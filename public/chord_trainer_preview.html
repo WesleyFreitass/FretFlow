@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FretFlow - Treinador de Acordes (Protótipo Didático)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #070a10;
+      color: #f1f5f9;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- 1. CABEÇALHO DA ABA -->
+    <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="p-3 bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 font-black rounded-2xl shadow-lg shadow-emerald-500/20 text-2xl">
+          ✨
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-black text-white tracking-tight">Treinador & Diagnóstico de Acordes</h1>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+              MODO INICIANTE DIDÁTICO
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            Visualize as cifras, nomes em português, posicionamento dos dedos e dicas anatômicas contra abafamento
+          </p>
+        </div>
+      </div>
+
+      <!-- Barra de Pesquisa Rápida -->
+      <div class="relative min-w-[260px]">
+        <input 
+          id="searchInput" 
+          type="text" 
+          placeholder="Buscar acorde (ex: Dó, Em, Pestana)..." 
+          class="w-full bg-[#090d16] border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400"
+          oninput="handleSearch()"
+        />
+        <span class="absolute right-3 top-2 text-slate-500 text-xs">🔍</span>
+      </div>
+    </div>
+
+    <!-- 2. FILTRO POR CATEGORIAS DE ESTUDO -->
+    <div class="bg-[#111827] border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between text-xs text-slate-400">
+        <span class="font-bold text-slate-300 uppercase tracking-wider">📚 Categorias de Estudo Sugeridas:</span>
+        <span id="chordCount" class="font-mono text-emerald-400 font-bold">7 Acordes</span>
+      </div>
+
+      <!-- Botões de Categoria -->
+      <div class="flex flex-wrap gap-2">
+        <button onclick="setCategory('iniciante')" id="btn-iniciante" class="cat-btn px-4 py-2 rounded-xl text-xs font-black transition border bg-emerald-500 text-slate-950 border-emerald-400 shadow-md">
+          🌱 Essenciais para Iniciantes
+        </button>
+        <button onclick="setCategory('menores')" id="btn-menores" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold transition border bg-[#090d16] text-slate-300 border-slate-800 hover:border-slate-700">
+          🎸 Menores Emotivos
+        </button>
+        <button onclick="setCategory('pestanas')" id="btn-pestanas" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold transition border bg-[#090d16] text-slate-300 border-slate-800 hover:border-slate-700">
+          🔒 O Desafio da Pestana
+        </button>
+        <button onclick="setCategory('power')" id="btn-power" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold transition border bg-[#090d16] text-slate-300 border-slate-800 hover:border-slate-700">
+          ⚡ Power Chords (Rock)
+        </button>
+        <button onclick="setCategory('setimas')" id="btn-setimas" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold transition border bg-[#090d16] text-slate-300 border-slate-800 hover:border-slate-700">
+          🎷 Acordes com 7ª (Blues / Pop)
+        </button>
+        <button onclick="setCategory('todos')" id="btn-todos" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold transition border bg-[#090d16] text-slate-300 border-slate-800 hover:border-slate-700">
+          🌐 Todos os 12 Acordes
+        </button>
+      </div>
+
+      <!-- GRID DE CARDS RICOS DOS ACORDES -->
+      <div id="chordGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 pt-2">
+        <!-- Cards gerados dinamicamente via JS -->
+      </div>
+    </div>
+
+    <!-- 3. PAINEL PRINCIPAL: GUIA DIDÁTICO + DIAGRAMA VISUAL + DIAGNÓSTICO -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LADO ESQUERDO: INFORMAÇÕES DETALHADAS & GUIA ANATÔMICO (7 cols) -->
+      <div class="lg:col-span-7 bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6 flex flex-col justify-between">
+        
+        <!-- Header do Acorde Selecionado -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-baseline gap-3">
+              <span id="displayCifra" class="text-4xl md:text-5xl font-black text-white font-mono tracking-tight">C</span>
+              <span id="displayNome" class="text-lg md:text-xl font-bold text-emerald-400">Dó Maior</span>
+            </div>
+            <span id="displayBadge" class="px-3.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold">
+              🌱 Fácil (3 dedos)
+            </span>
+          </div>
+
+          <!-- Alerta de Palhetada (Onde palhetar) -->
+          <div id="displayStrumAlert" class="bg-[#090d16] border border-slate-800 rounded-2xl p-3.5 flex items-center gap-3 text-xs">
+            <span class="text-xl">🎯</span>
+            <div>
+              <span class="font-bold text-white block">Como Palhetar:</span>
+              <span id="displayStrumText" class="text-slate-300">Toque a partir da <strong>5ª corda (Lá)</strong> para baixo. Mute a 6ª corda com a ponta do dedo 3 ou polegar.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GUIA ANATÔMICO DOS DEDOS (Mão Esquerda) -->
+        <div class="bg-[#090d16] border border-slate-800 rounded-2xl p-4 space-y-3 shadow-inner">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-300 flex items-center gap-1.5">
+              <span>🖐️</span> Guia de Dedos da Mão Esquerda:
+            </span>
+            <span class="text-[11px] text-slate-500 font-mono">Posicionamento</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div class="bg-[#111827] p-2.5 rounded-xl border border-rose-500/30 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-rose-500 text-white font-black flex items-center justify-center text-[11px]">1</span>
+              <div>
+                <strong class="text-rose-300 block text-[11px]">Indicador</strong>
+                <span id="dedo1Text" class="text-[10px] text-slate-400">2ª Corda (Casa 1)</span>
+              </div>
+            </div>
+
+            <div class="bg-[#111827] p-2.5 rounded-xl border border-amber-500/30 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black flex items-center justify-center text-[11px]">2</span>
+              <div>
+                <strong class="text-amber-300 block text-[11px]">Médio</strong>
+                <span id="dedo2Text" class="text-[10px] text-slate-400">4ª Corda (Casa 2)</span>
+              </div>
+            </div>
+
+            <div class="bg-[#111827] p-2.5 rounded-xl border border-sky-500/30 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-sky-400 text-slate-950 font-black flex items-center justify-center text-[11px]">3</span>
+              <div>
+                <strong class="text-sky-300 block text-[11px]">Anelar</strong>
+                <span id="dedo3Text" class="text-[10px] text-slate-400">5ª Corda (Casa 3)</span>
+              </div>
+            </div>
+
+            <div class="bg-[#111827] p-2.5 rounded-xl border border-purple-500/30 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-purple-400 text-white font-black flex items-center justify-center text-[11px]">4</span>
+              <div>
+                <strong class="text-purple-300 block text-[11px]">Mínimo</strong>
+                <span id="dedo4Text" class="text-[10px] text-slate-400">Livre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DICA DE POSTURA & DIAGNÓSTICO EM TEMPO REAL -->
+        <div class="space-y-3">
+          <div class="bg-amber-950/30 border border-amber-500/30 rounded-2xl p-4 text-xs space-y-1">
+            <span class="font-bold text-amber-300 flex items-center gap-1.5">
+              <span>💡</span> Dica Anatômica do Professor:
+            </span>
+            <p id="displayDica" class="text-slate-300 leading-relaxed">
+              Dobre bem a 1ª falange do dedo 1 (indicador) para a ponta dele não encostar nem abafar a 1ª corda (Mizinha solta). Mute a 6ª corda com a ponta do dedo 3.
+            </p>
+          </div>
+
+          <!-- Caixa de Diagnóstico Inteligente -->
+          <div class="bg-[#090d16] border border-emerald-500/40 rounded-2xl p-4 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-emerald-300 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Diagnóstico do Som da Sua Guitarra:
+              </span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">
+                100% LIMPO
+              </span>
+            </div>
+            <p class="text-xs text-slate-300">
+              🎯 <strong>Acorde Perfeito!</strong> Todas as notas essenciais (<span id="displayNotas" class="text-emerald-400 font-bold">Dó - Mi - Sol</span>) estão ressoando com clareza e afinação impecável.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- LADO DIREITO: DIAGRAMA DO BRAÇO DA GUITARRA (5 cols) -->
+      <div class="lg:col-span-5 bg-[#111827] border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 flex flex-col items-center justify-between">
+        
+        <div class="w-full flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Diagrama no Braço:</span>
+          <span id="displayNutLabel" class="text-[11px] font-mono text-emerald-400 font-bold">Nut (Pestana do Braço)</span>
+        </div>
+
+        <!-- DIAGRAMA VISUAL DO FRETBOARD (SVG / HTML) -->
+        <div class="w-full max-w-[320px] bg-[#090d16] border border-slate-800 rounded-2xl p-4 shadow-inner space-y-3">
+          
+          <!-- Top String Actions (X / O / 🎯) -->
+          <div id="diagramTopActions" class="grid grid-cols-6 text-center font-mono font-black text-xs">
+            <span class="text-rose-400">✕</span>
+            <span class="text-emerald-400">●</span>
+            <span class="text-emerald-400">●</span>
+            <span class="text-cyan-400">○</span>
+            <span class="text-emerald-400">●</span>
+            <span class="text-cyan-400">○</span>
+          </div>
+
+          <!-- Cordas & Trastes (Nut Bar + 4 Casas) -->
+          <div class="relative bg-[#171e2e] border-2 border-slate-700 rounded-lg overflow-hidden shadow-2xl">
+            <!-- Nut Header Bar -->
+            <div class="h-3 bg-slate-300 border-b-2 border-slate-900 w-full shadow"></div>
+
+            <!-- Fret Grid (4 Casas) -->
+            <div class="space-y-6 py-3 relative">
+              <!-- Trastes Metálicos Horizontais -->
+              <div class="border-b border-slate-600/80 w-full"></div>
+              <div class="border-b border-slate-600/80 w-full"></div>
+              <div class="border-b border-slate-600/80 w-full"></div>
+
+              <!-- 6 Cordas Verticais com Bolinhas -->
+              <div id="diagramStrings" class="absolute inset-0 grid grid-cols-6 h-full z-10 px-2">
+                <!-- Renderizado dinamicamente -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Legenda do Diagrama -->
+          <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 font-mono">
+            <span>6ª E (Mi)</span>
+            <span>5ª A</span>
+            <span>4ª D</span>
+            <span>3ª G</span>
+            <span>2ª B</span>
+            <span>1ª e (Mi)</span>
+          </div>
+        </div>
+
+        <div class="text-[11px] text-slate-400 text-center flex items-center justify-center gap-3">
+          <span class="flex items-center gap-1"><span class="text-rose-400 font-bold">✕</span> Não tocar</span>
+          <span class="flex items-center gap-1"><span class="text-cyan-400 font-bold">○</span> Corda solta</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Dedo</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // BANCO DE DADOS DIDÁTICO DE ACORDES
+    const CHORDS = [
+      {
+        key: 'C',
+        name: 'Dó Maior',
+        category: 'iniciante',
+        difficulty: '🌱 Fácil (3 dedos)',
+        fingersCount: 3,
+        strumText: 'Toque a partir da 5ª corda (Lá) para baixo. Mute a 6ª corda com a ponta do dedo 3.',
+        notes: ['Dó', 'Mi', 'Sol'],
+        dica: 'Dobre bem a 1ª falange do dedo 1 (indicador) para a ponta dele não encostar nem abafar a 1ª corda (Mizinha solta). Mute a 6ª corda.',
+        dedos: { d1: '2ª Corda (Casa 1)', d2: '4ª Corda (Casa 2)', d3: '5ª Corda (Casa 3)', d4: 'Livre' },
+        frets: [-1, 3, 2, 0, 1, 0],
+        fingerNum: [-1, 3, 2, 0, 1, 0],
+        topActions: ['✕', '●', '●', '○', '●', '○']
+      },
+      {
+        key: 'D',
+        name: 'Ré Maior',
+        category: 'iniciante',
+        difficulty: '🌱 Fácil (3 dedos)',
+        fingersCount: 3,
+        strumText: 'Toque apenas a partir da 4ª corda (Ré solta). Não toque a 5ª nem a 6ª corda.',
+        notes: ['Ré', 'Fá#', 'Lá'],
+        dica: 'Posicione os dedos bem pertinho dos trastes metálicos. Formato triangular.',
+        dedos: { d1: '3ª Corda (Casa 2)', d2: '1ª Corda (Casa 2)', d3: '2ª Corda (Casa 3)', d4: 'Livre' },
+        frets: [-1, -1, 0, 2, 3, 2],
+        fingerNum: [-1, -1, 0, 1, 3, 2],
+        topActions: ['✕', '✕', '○', '●', '●', '●']
+      },
+      {
+        key: 'Em',
+        name: 'Mi Menor',
+        category: 'iniciante',
+        difficulty: '🌱 Fácil (2 dedos)',
+        fingersCount: 2,
+        strumText: 'Toque todas as 6 cordas com palhetada cheia e vigorosa!',
+        notes: ['Mi', 'Sol', 'Si'],
+        dica: 'Apenas 2 dedos! Mantenha o polegar atrás do braço para apoiar os dedos 2 e 3.',
+        dedos: { d1: 'Livre', d2: '5ª Corda (Casa 2)', d3: '4ª Corda (Casa 2)', d4: 'Livre' },
+        frets: [0, 2, 2, 0, 0, 0],
+        fingerNum: [0, 2, 3, 0, 0, 0],
+        topActions: ['○', '●', '●', '○', '○', '○']
+      },
+      {
+        key: 'G',
+        name: 'Sol Maior',
+        category: 'iniciante',
+        difficulty: '🌱 Fácil (3 dedos)',
+        fingersCount: 3,
+        strumText: 'Toque todas as 6 cordas. O som deve soar bem aberto e brilhante.',
+        notes: ['Sol', 'Si', 'Ré'],
+        dica: 'Estique bem o dedo 2 na 6ª corda. Deixe a palma da mão arqueada para não abafar as cordas soltas no meio.',
+        dedos: { d1: '5ª Corda (Casa 2)', d2: '6ª Corda (Casa 3)', d3: '1ª Corda (Casa 3)', d4: 'Livre' },
+        frets: [3, 2, 0, 0, 0, 3],
+        fingerNum: [2, 1, 0, 0, 0, 3],
+        topActions: ['●', '●', '○', '○', '○', '●']
+      },
+      {
+        key: 'Am',
+        name: 'Lá Menor',
+        category: 'iniciante',
+        difficulty: '🌱 Fácil (3 dedos)',
+        fingersCount: 3,
+        strumText: 'Toque a partir da 5ª corda (Lá solta). Não toque a 6ª corda.',
+        notes: ['Lá', 'Dó', 'Mi'],
+        dica: 'Mesmo formato do Mi Maior (E), só que descendo uma corda para baixo!',
+        dedos: { d1: '2ª Corda (Casa 1)', d2: '4ª Corda (Casa 2)', d3: '3ª Corda (Casa 2)', d4: 'Livre' },
+        frets: [-1, 0, 2, 2, 1, 0],
+        fingerNum: [-1, 0, 2, 3, 1, 0],
+        topActions: ['✕', '○', '●', '●', '●', '○']
+      },
+      {
+        key: 'E',
+        name: 'Mi Maior',
+        category: 'iniciante',
+        difficulty: '🌱 Fácil (3 dedos)',
+        fingersCount: 3,
+        strumText: 'Toque todas as 6 cordas. Som cheio e clássico de rock!',
+        notes: ['Mi', 'Sol#', 'Si'],
+        dica: 'Use as pontas dos dedos e mantenha a mão relaxada.',
+        dedos: { d1: '3ª Corda (Casa 1)', d2: '5ª Corda (Casa 2)', d3: '4ª Corda (Casa 2)', d4: 'Livre' },
+        frets: [0, 2, 2, 1, 0, 0],
+        fingerNum: [0, 2, 3, 1, 0, 0],
+        topActions: ['○', '●', '●', '●', '○', '○']
+      },
+      {
+        key: 'A',
+        name: 'Lá Maior',
+        category: 'iniciante',
+        difficulty: '🌱 Fácil (3 dedos)',
+        fingersCount: 3,
+        strumText: 'Toque a partir da 5ª corda. Deixe a 1ª corda (Mizinha) soando aberta.',
+        notes: ['Lá', 'Dó#', 'Mi'],
+        dica: 'Junte os 3 dedos na mesma casa (casa 2) como se fossem um bloco só.',
+        dedos: { d1: '4ª Corda (Casa 2)', d2: '3ª Corda (Casa 2)', d3: '2ª Corda (Casa 2)', d4: 'Livre' },
+        frets: [-1, 0, 2, 2, 2, 0],
+        fingerNum: [-1, 0, 1, 2, 3, 0],
+        topActions: ['✕', '○', '●', '●', '●', '○']
+      },
+      {
+        key: 'Dm',
+        name: 'Ré Menor',
+        category: 'menores',
+        difficulty: '🎸 Menor Emotivo',
+        fingersCount: 3,
+        strumText: 'Toque a partir da 4ª corda (Ré solta). Tom melancólico e emotivo.',
+        notes: ['Ré', 'Fá', 'Lá'],
+        dica: 'Estique o dedo 3 na casa 3 e mantenha o dedo 1 bem na pontinha na casa 1.',
+        dedos: { d1: '1ª Corda (Casa 1)', d2: '3ª Corda (Casa 2)', d3: '2ª Corda (Casa 3)', d4: 'Livre' },
+        frets: [-1, -1, 0, 2, 3, 1],
+        fingerNum: [-1, -1, 0, 2, 3, 1],
+        topActions: ['✕', '✕', '○', '●', '●', '●']
+      },
+      {
+        key: 'F',
+        name: 'Fá Maior (Pestana)',
+        category: 'pestanas',
+        difficulty: '🔒 Pestana (Casa 1)',
+        fingersCount: 4,
+        strumText: 'Pestana completa em todas as 6 cordas na casa 1.',
+        notes: ['Fá', 'Lá', 'Dó'],
+        dica: 'Role o dedo indicador ligeiramente de lado (na parte óssea lateral) e pressione perto do traste metálico da casa 1.',
+        dedos: { d1: 'Pestana Casa 1 (Todas)', d2: '3ª Corda (Casa 2)', d3: '5ª Corda (Casa 3)', d4: '4ª Corda (Casa 3)' },
+        frets: [1, 3, 3, 2, 1, 1],
+        fingerNum: [1, 3, 4, 2, 1, 1],
+        topActions: ['●', '●', '●', '●', '●', '●']
+      },
+      {
+        key: 'Bm',
+        name: 'Si Menor (Pestana)',
+        category: 'pestanas',
+        difficulty: '🔒 Pestana (Casa 2)',
+        fingersCount: 4,
+        strumText: 'Pestana na casa 2 da 5ª corda para baixo. Não toque a 6ª corda.',
+        notes: ['Si', 'Ré', 'Fá#'],
+        dica: 'Mantenha o polegar bem firme no centro das costas do braço.',
+        dedos: { d1: 'Pestana Casa 2', d2: '2ª Corda (Casa 3)', d3: '4ª Corda (Casa 4)', d4: '3ª Corda (Casa 4)' },
+        frets: [-1, 2, 4, 4, 3, 2],
+        fingerNum: [-1, 1, 3, 4, 2, 1],
+        topActions: ['✕', '●', '●', '●', '●', '●']
+      },
+      {
+        key: 'E5',
+        name: 'Mi 5 (Power Chord)',
+        category: 'power',
+        difficulty: '⚡ Power Chord Rock',
+        fingersCount: 2,
+        strumText: 'Toque apenas as cordas 6 e 5 com distorção pesada!',
+        notes: ['Mi', 'Si'],
+        dica: 'Abafe as cordas 4, 3, 2 e 1 descansando levemente a palma da mão sobre elas.',
+        dedos: { d1: 'Livre', d2: '5ª Corda (Casa 2)', d3: 'Livre', d4: 'Livre' },
+        frets: [0, 2, -1, -1, -1, -1],
+        fingerNum: [0, 2, -1, -1, -1, -1],
+        topActions: ['○', '●', '✕', '✕', '✕', '✕']
+      },
+      {
+        key: 'A7',
+        name: 'Lá com 7ª',
+        category: 'setimas',
+        difficulty: '🎷 Blues / Pop (2 dedos)',
+        fingersCount: 2,
+        strumText: 'Toque a partir da 5ª corda. Deixe a 3ª corda (Sol solta) soar no centro!',
+        notes: ['Lá', 'Dó#', 'Mi', 'Sol'],
+        dica: 'Acorde de 2 dedos muito usado em Blues e Rock n Roll clássico.',
+        dedos: { d1: '4ª Corda (Casa 2)', d2: '2ª Corda (Casa 2)', d3: 'Livre', d4: 'Livre' },
+        frets: [-1, 0, 2, 0, 2, 0],
+        fingerNum: [-1, 0, 1, 0, 2, 0],
+        topActions: ['✕', '○', '●', '○', '●', '○']
+      }
+    ];
+
+    let currentCategory = 'iniciante';
+    let selectedChordKey = 'C';
+
+    function renderCards() {
+      const grid = document.getElementById('chordGrid');
+      const filtered = CHORDS.filter(c => currentCategory === 'todos' || c.category === currentCategory);
+      document.getElementById('chordCount').innerText = `${filtered.length} Acordes`;
+
+      grid.innerHTML = filtered.map(c => {
+        const isSelected = c.key === selectedChordKey;
+        return `
+          <button 
+            onclick="selectChord('${c.key}')" 
+            class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between ${
+              isSelected 
+                ? 'bg-gradient-to-b from-emerald-950/80 to-[#091512] border-emerald-400 shadow-lg shadow-emerald-500/20 scale-105' 
+                : 'bg-[#090d16] border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+            }"
+          >
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-black font-mono ${isSelected ? 'text-emerald-300' : 'text-white'}">${c.key}</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded font-bold ${
+                  c.category === 'pestanas' ? 'bg-rose-500/20 text-rose-300' :
+                  c.category === 'power' ? 'bg-amber-500/20 text-amber-300' :
+                  'bg-emerald-500/20 text-emerald-300'
+                }">
+                  ${c.category === 'pestanas' ? '🔒 Pestana' : c.category === 'power' ? '⚡ Rock' : '🌱 Básico'}
+                </span>
+              </div>
+              <h4 class="text-xs font-bold text-slate-200 mt-1 truncate">${c.name}</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5 truncate">${c.difficulty}</p>
+            </div>
+            <div class="text-[9px] text-slate-500 font-mono mt-2 pt-1 border-t border-slate-800/80">
+              ${c.strumText.split('.')[0]}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectChord(key) {
+      selectedChordKey = key;
+      const c = CHORDS.find(item => item.key === key) || CHORDS[0];
+
+      document.getElementById('displayCifra').innerText = c.key;
+      document.getElementById('displayNome').innerText = c.name;
+      document.getElementById('displayBadge').innerText = c.difficulty;
+      document.getElementById('displayStrumText').innerHTML = c.strumText;
+      document.getElementById('displayDica').innerText = c.dica;
+      document.getElementById('displayNotas').innerText = c.notes.join(' - ');
+
+      document.getElementById('dedo1Text').innerText = c.dedos.d1;
+      document.getElementById('dedo2Text').innerText = c.dedos.d2;
+      document.getElementById('dedo3Text').innerText = c.dedos.d3;
+      document.getElementById('dedo4Text').innerText = c.dedos.d4;
+
+      // Render Top Actions
+      const topActionsEl = document.getElementById('diagramTopActions');
+      topActionsEl.innerHTML = c.topActions.map(act => {
+        const color = act === '✕' ? 'text-rose-400' : act === '○' ? 'text-cyan-400' : 'text-emerald-400';
+        return `<span class="${color}">${act}</span>`;
+      }).join('');
+
+      // Render Strings
+      const stringsEl = document.getElementById('diagramStrings');
+      stringsEl.innerHTML = c.frets.map((fret, stringIdx) => {
+        const finger = c.fingerNum[stringIdx];
+        const stringThickness = [1.5, 2, 2.5, 3, 3.8, 4.8][stringIdx];
+        
+        let dotHtml = '';
+        if (fret > 0) {
+          const topPercent = (fret - 0.5) * 25;
+          const fingerColor = finger === 1 ? 'bg-rose-500' : finger === 2 ? 'bg-amber-400 text-slate-950' : finger === 3 ? 'bg-sky-400 text-slate-950' : 'bg-purple-400 text-white';
+          dotHtml = `
+            <div 
+              class="absolute w-6 h-6 rounded-full ${fingerColor} font-mono font-black text-xs flex items-center justify-center shadow-lg transform -translate-x-1/2 -translate-y-1/2 z-20"
+              style="top: ${topPercent}%; left: 50%;"
+            >
+              ${finger}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="relative h-full flex justify-center">
+            <div class="h-full bg-slate-500/60 shadow-sm" style="width: ${stringThickness}px;"></div>
+            ${dotHtml}
+          </div>
+        `;
+      }).join('');
+
+      renderCards();
+    }
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold transition border bg-[#090d16] text-slate-300 border-slate-800 hover:border-slate-700';
+      });
+      const activeBtn = document.getElementById(`btn-${cat}`);
+      if (activeBtn) {
+        activeBtn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-black transition border bg-emerald-500 text-slate-950 border-emerald-400 shadow-md';
+      }
+      renderCards();
+    }
+
+    function handleSearch() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      if (!q) {
+        renderCards();
+        return;
+      }
+      const grid = document.getElementById('chordGrid');
+      const filtered = CHORDS.filter(c => c.key.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || c.category.toLowerCase().includes(q));
+      grid.innerHTML = filtered.map(c => `
+        <button onclick="selectChord('${c.key}')" class="p-3 rounded-2xl border text-left transition-all bg-[#090d16] border-slate-800 hover:border-slate-700">
+          <span class="text-xl font-black font-mono text-emerald-300">${c.key}</span>
+          <h4 class="text-xs font-bold text-slate-200">${c.name}</h4>
+        </button>
+      `).join('');
+    }
+
+    selectChord('C');
+  </script>
+</body>
+</html>

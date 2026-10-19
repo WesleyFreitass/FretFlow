@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-oficina-bg text-oficina-darkText font-sans antialiased;
+  }
+}
+
+/* Custom boutique scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e9e5da;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc7ba;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8a867a;
+}
+
+/* Brazilian Rosewood / Dark Walnut Fretboard */
+.fretboard-wood-boutique,
+.fretboard-wood-rosewood {
+  background: 
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px),
+    linear-gradient(180deg, #2b1810 0%, #1c0e08 50%, #24130b 100%);
+  box-shadow: inset 0 3px 8px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* 3D Nickel-Silver Fret Wire */
+.fret-wire-nickel {
+  border-right: 2px solid #525a62;
+  box-shadow: 1px 0 0 #d9e2ea, -1px 0 1px rgba(0,0,0,0.6);
+}
+
+/* Pearloid / Mother-of-Pearl Inlay Dot */
+.inlay-pearl {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #e8e2d5 40%, #b8ab97 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.3);
+}
+
+/* Plain Steel String (Treble: 1st, 2nd, 3rd) */
+.string-plain {
+  background: linear-gradient(180deg, #ffffff 0%, #cfd5db 50%, #8b9299 100%);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.7);
+}
+
+/* Wound Nickel String (Bass: 4th, 5th, 6th) */
+.string-wound {
+  background: 
+    repeating-linear-gradient(90deg, #baa287 0px, #baa287 1px, #6b5c4c 1px, #6b5c4c 2.5px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Glowing Diode LED utilities */
+.led-glow-green {
+  box-shadow: 0 0 6px #7fbf4d;
+}
+
+.led-glow-amber {
+  box-shadow: 0 0 6px #e8a325;
+}
+
+.led-glow-red {
+  box-shadow: 0 0 6px #d9563a;
+}
+
+.led-glow-yellow {
+  box-shadow: 0 0 6px #ffd166;
+}
+
+/* Vintage Chassis Shadow */
+.chassis-shadow {
+  box-shadow: 0 24px 60px -30px rgba(31, 35, 33, 0.45);
+}
+
+/* ========================================================================= */
+/* ALPHATAB MUSIC SHEET CURSOR & PLAYBACK HIGHLIGHTING                      */
+/* ========================================================================= */
+.at-cursor-bar {
+  background: rgba(232, 163, 37, 0.22) !important;
+  border-radius: 3px !important;
+  pointer-events: none !important;
+  z-index: 10 !important;
+  transition: all 0.05s ease !important;
+}
+
+.at-cursor-beat {
+  background: #d9563a !important;
+  box-shadow: 0 0 10px rgba(217, 86, 58, 0.9) !important;
+  width: 3.5px !important;
+  border-radius: 2px !important;
+  pointer-events: none !important;
+  z-index: 20 !important;
+  transition: all 0.04s ease !important;
+}
+
+.at-selection div {
+  background: rgba(63, 122, 38, 0.2) !important;
+  pointer-events: none !important;
+}
+
+.at-highlight {
+  fill: #d9563a !important;
+  stroke: #d9563a !important;
+}

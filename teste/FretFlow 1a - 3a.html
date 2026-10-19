@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FretFlow — Oficina (1a) & Pedaleira (3a)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#e8e6e1; font-family:'Archivo',system-ui,sans-serif; }
+  a { color:#1f6f6a; text-decoration:none; }
+  a:hover { color:#0f4a46; }
+  @keyframes fretpulse { 0%,100% { opacity:1 } 50% { opacity:.35 } }
+</style>
+</head>
+<body>
+<div style="display:flex; flex-direction:column; gap:48px; padding:48px; width:max-content;">
+<div id="1a" style="display:flex; flex-direction:column; gap:12px; flex:0 0 1080px; width:1080px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; background:#1f2321; color:#f3f1ec; padding:4px 9px; border-radius:2px;">1a</span>
+        <span style="font-size:13px; color:#4a4842; font-weight:600;">Oficina — claro, madeira e esmalte, cara de pedal boutique · agora com dock fixo da pedaleira no rodapé</span>
+      </div>
+
+      <div style="background:#f4f2ec; border:1px solid #ccc7ba; border-radius:6px; overflow:hidden; box-shadow:0 24px 60px -30px rgba(31,35,33,.45); font-family:'Archivo',system-ui,sans-serif;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 22px; background:#1f2321; color:#f3f1ec;">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="width:34px; height:34px; border-radius:3px; background:#d9563a; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:15px; color:#1f2321;">FF</div>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <div style="font-size:16px; font-weight:800; letter-spacing:.02em;">FretFlow</div>
+              <div style="font-size:11px; color:#9c988f; font-family:'IBM Plex Mono',monospace;">Estúdio de guitarra, efeitos DSP &amp; aprendizado</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:14px; font-family:'IBM Plex Mono',monospace; font-size:11px;">
+            <div style="display:flex; align-items:center; gap:8px; border:1px solid #3a3f3c; padding:6px 10px; border-radius:3px;">
+              <span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; animation:fretpulse 1.8s infinite;"></span>
+              <span style="color:#cfcbc2;">INPUT 1 · 5.2 ms</span>
+            </div>
+            <div style="background:#7fbf4d; color:#1f2321; padding:7px 12px; border-radius:3px; font-weight:700;">ÁUDIO ATIVO</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:224px 1fr;">
+          <div style="background:#e9e5da; border-right:1px solid #ccc7ba; padding:18px 14px; display:flex; flex-direction:column; gap:4px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; color:#8a867a; padding:0 8px 10px;">MÓDULOS</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Afinador &amp; Prática</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Pedaleira &amp; Efeitos</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:800; background:#1f2321; color:#f3f1ec;">Treino de Acordes</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Trilha &amp; Métodos</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Escalas &amp; Modos</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Guitar Pro Tabs</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Arcade de Notas</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Modo YouTube</div>
+            <div style="margin-top:auto; padding-top:20px; display:flex; flex-direction:column; gap:7px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6b6860;">
+              <div style="display:flex; justify-content:space-between;"><span>Monitoring</span><span style="color:#3f7a26;">0 ms</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Noise gate</span><span style="color:#3f7a26;">on</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Latência</span><span>5.2 ms</span></div>
+            </div>
+          </div>
+
+          <div style="padding:24px; display:flex; flex-direction:column; gap:20px; background:#f4f2ec;">
+            <div style="display:flex; gap:20px;">
+              <div style="flex:1; background:#fffefa; border:1px solid #d5d0c3; border-radius:4px; padding:22px; display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <div style="font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8a867a;">AFINADOR CROMÁTICO</div>
+                  <div style="font-size:11px; font-family:'IBM Plex Mono',monospace; color:#3f7a26; font-weight:700;">AFINADO 0¢</div>
+                </div>
+                <div style="display:flex; align-items:baseline; gap:12px;">
+                  <span style="font-size:64px; line-height:.9; font-weight:800; letter-spacing:-.03em; color:#1f2321;">E</span>
+                  <span style="font-size:22px; color:#a5a093; font-weight:500;">2</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:13px; color:#6b6860; margin-left:auto;">82.41 Hz · 6ª corda</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="height:26px; background:#eae6da; border:1px solid #d5d0c3; border-radius:2px; position:relative;">
+                    <div style="position:absolute; left:0; top:0; bottom:0; width:50%; background:#dfe9d4;"></div>
+                    <div style="position:absolute; left:50%; top:-4px; bottom:-4px; width:3px; background:#3f7a26; transform:translateX(-50%);"></div>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8a867a;">
+                    <span>-50¢</span><span style="color:#3f7a26; font-weight:700;">0¢</span><span>+50¢</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; background:#1f2321; color:#f3f1ec; padding:7px 10px; border-radius:2px;">6ª E</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; background:#fffefa; border:1px solid #d5d0c3; color:#4a4842; padding:7px 10px; border-radius:2px;">5ª A</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; background:#fffefa; border:1px solid #d5d0c3; color:#4a4842; padding:7px 10px; border-radius:2px;">4ª D</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; background:#fffefa; border:1px solid #d5d0c3; color:#4a4842; padding:7px 10px; border-radius:2px;">3ª G</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; background:#fffefa; border:1px solid #d5d0c3; color:#4a4842; padding:7px 10px; border-radius:2px;">2ª B</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; background:#fffefa; border:1px solid #d5d0c3; color:#4a4842; padding:7px 10px; border-radius:2px;">1ª e</span>
+                </div>
+              </div>
+
+              <div style="width:280px; background:#d9563a; border-radius:4px; padding:22px; display:flex; flex-direction:column; gap:16px; color:#2a140e;">
+                <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em;">PEDAL EM FOCO</div>
+                <div style="font-size:22px; font-weight:800; line-height:1.1;">TS-808<br>Drive</div>
+                <div style="display:flex; gap:14px;">
+                  <div style="width:64px; height:64px; border-radius:50%; background:#f4f2ec; border:4px solid #2a140e; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">DRIVE</div>
+                  <div style="width:64px; height:64px; border-radius:50%; background:#f4f2ec; border:4px solid #2a140e; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">TONE</div>
+                </div>
+                <div style="margin-top:auto; background:#2a140e; color:#f4f2ec; text-align:center; padding:10px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700;">LIGADO</div>
+              </div>
+            </div>
+
+            <div style="background:#fffefa; border:1px solid #d5d0c3; border-radius:4px; padding:22px; display:flex; gap:24px;">
+              <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; align-items:baseline; justify-content:space-between;">
+                  <div>
+                    <div style="font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8a867a;">ACORDE ATIVO</div>
+                    <div style="font-size:34px; font-weight:800; color:#1f2321; letter-spacing:-.02em;">C <span style="font-size:16px; font-weight:600; color:#8a867a;">Dó Maior</span></div>
+                  </div>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; border:1px solid #d5d0c3; padding:5px 9px; border-radius:2px; color:#4a4842;">3 dedos</span>
+                </div>
+                <div style="background:#dfe9d4; border-left:3px solid #3f7a26; padding:12px 14px; font-size:13px; color:#2c3d21; line-height:1.5;">
+                  <strong>Acorde limpo — 98% de precisão.</strong> As notas C, E e G estão soando afinadas.
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8a867a;">GUIA DE DEDOS</div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <div style="display:flex; align-items:center; gap:9px; border:1px solid #e2ddd0; padding:8px 10px; border-radius:3px;">
+                      <span style="width:22px; height:22px; border-radius:50%; background:#d9563a; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">1</span>
+                      <span style="font-size:12px; color:#4a4842;">Indicador · 2ª / casa 1</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:9px; border:1px solid #e2ddd0; padding:8px 10px; border-radius:3px;">
+                      <span style="width:22px; height:22px; border-radius:50%; background:#c08b1f; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">2</span>
+                      <span style="font-size:12px; color:#4a4842;">Médio · 4ª / casa 2</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:9px; border:1px solid #e2ddd0; padding:8px 10px; border-radius:3px;">
+                      <span style="width:22px; height:22px; border-radius:50%; background:#1f6f6a; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">3</span>
+                      <span style="font-size:12px; color:#4a4842;">Anelar · 5ª / casa 3</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:9px; border:1px solid #e2ddd0; padding:8px 10px; border-radius:3px;">
+                      <span style="width:22px; height:22px; border-radius:50%; background:#cfcbc2; color:#4a4842; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">4</span>
+                      <span style="font-size:12px; color:#8a867a;">Mínimo · livre</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="width:400px; display:flex; flex-direction:column; gap:10px;">
+                <div style="background:linear-gradient(180deg,#8a5a2b,#6d4420); border-radius:3px; padding:18px 20px; display:flex; flex-direction:column; gap:12px; box-shadow:inset 0 0 30px rgba(0,0,0,.35);">
+                  <div style="display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; color:#f6efe2;">
+                    <span style="color:#ffb3a3;">✕</span><span></span><span>○</span><span></span><span></span><span>○</span>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:14px; position:relative;">
+                    <div style="height:2px; background:#e8e2d4;"></div>
+                    <div style="height:2px; background:#e8e2d4; position:relative;">
+                      <span style="position:absolute; left:16%; top:-11px; width:24px; height:24px; border-radius:50%; background:#d9563a; border:2px solid #fffefa; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">1</span>
+                    </div>
+                    <div style="height:3px; background:#e0d9c9;"></div>
+                    <div style="height:3px; background:#d8cdb6; position:relative;">
+                      <span style="position:absolute; left:45%; top:-11px; width:24px; height:24px; border-radius:50%; background:#c08b1f; border:2px solid #fffefa; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">2</span>
+                    </div>
+                    <div style="height:4px; background:#cbbda2; position:relative;">
+                      <span style="position:absolute; left:76%; top:-11px; width:24px; height:24px; border-radius:50%; background:#1f6f6a; border:2px solid #fffefa; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;">3</span>
+                    </div>
+                    <div style="height:5px; background:#bda887;"></div>
+                  </div>
+                  <div style="display:grid; grid-template-columns:repeat(4,1fr); text-align:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#e3d3b6; border-top:1px solid rgba(0,0,0,.3); padding-top:8px;">
+                    <span>Nut</span><span>1</span><span>2</span><span>3</span>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6b6860;">
+                  <span>Notas do acorde</span>
+                  <span style="display:flex; gap:6px;">
+                    <span style="background:#3f7a26; color:#fffefa; padding:4px 8px; border-radius:2px;">C</span>
+                    <span style="background:#3f7a26; color:#fffefa; padding:4px 8px; border-radius:2px;">E</span>
+                    <span style="background:#3f7a26; color:#fffefa; padding:4px 8px; border-radius:2px;">G</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOCK FIXO DA PEDALEIRA -->
+        <div style="background:#1f2321; border-top:2px solid #d9563a; padding:12px 22px; display:flex; align-items:stretch; gap:18px; font-family:'IBM Plex Mono',monospace; color:#f3f1ec;">
+          <div style="display:flex; align-items:center; gap:12px; padding-right:18px; border-right:1px solid #3a3f3c;">
+            <span style="font-size:15px; color:#6b6f6b; cursor:pointer;">‹</span>
+            <div style="display:flex; flex-direction:column; gap:3px; min-width:132px;">
+              <span style="font-size:9px; letter-spacing:.18em; color:#8a8e88;">PRESET ATIVO</span>
+              <span style="font-size:13px; font-weight:700; color:#f3f1ec;">Eddie Van Halen ⌄</span>
+            </div>
+            <span style="font-size:15px; color:#6b6f6b; cursor:pointer;">›</span>
+          </div>
+
+          <div style="flex:1; display:flex; gap:8px;">
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #7fbf4d; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:10px; font-weight:700; letter-spacing:.06em;">GATE</span>
+                <span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; box-shadow:0 0 6px #7fbf4d;"></span>
+              </div>
+              <span style="font-size:9px; color:#8a8e88;">1 · -48 dB</span>
+            </div>
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #7fbf4d; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:10px; font-weight:700; letter-spacing:.06em;">TS-808</span>
+                <span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; box-shadow:0 0 6px #7fbf4d;"></span>
+              </div>
+              <span style="font-size:9px; color:#8a8e88;">2 · drive 6.5</span>
+            </div>
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #7fbf4d; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:10px; font-weight:700; letter-spacing:.06em;">PHASE 90</span>
+                <span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; box-shadow:0 0 6px #7fbf4d;"></span>
+              </div>
+              <span style="font-size:9px; color:#8a8e88;">3 · speed 4</span>
+            </div>
+            <div style="flex:1; background:#22261f; border-top:2px solid #43473f; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:10px; font-weight:700; letter-spacing:.06em; color:#8a8e88;">FLANGER</span>
+                <span style="width:7px; height:7px; border-radius:50%; background:#43473f;"></span>
+              </div>
+              <span style="font-size:9px; color:#6b6f6b;">4 · bypass</span>
+            </div>
+            <div style="flex:1; background:#22261f; border-top:2px solid #43473f; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:10px; font-weight:700; letter-spacing:.06em; color:#8a8e88;">DELAY</span>
+                <span style="width:7px; height:7px; border-radius:50%; background:#43473f;"></span>
+              </div>
+              <span style="font-size:9px; color:#6b6f6b;">5 · bypass</span>
+            </div>
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #e8a325; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:10px; font-weight:700; letter-spacing:.06em;">TWIN '65</span>
+                <span style="width:7px; height:7px; border-radius:50%; background:#e8a325; box-shadow:0 0 6px #e8a325;"></span>
+              </div>
+              <span style="font-size:9px; color:#8a8e88;">6 · cab 2x12</span>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:14px; padding-left:18px; border-left:1px solid #3a3f3c;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+              <div style="width:40px; height:40px; border-radius:50%; background:#f3f1ec; border:3px solid #d9563a; position:relative;">
+                <span style="position:absolute; left:50%; top:4px; width:2px; height:12px; background:#1f2321; transform:translateX(-50%) rotate(28deg); transform-origin:bottom center;"></span>
+              </div>
+              <span style="font-size:9px; color:#8a8e88;">DRIVE</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+              <span style="background:#d9563a; color:#1f2321; font-size:10px; font-weight:700; padding:6px 11px; text-align:center;">BYPASS TOTAL · ESPAÇO</span>
+              <span style="border:1px solid #3a3f3c; color:#cfcbc2; font-size:10px; padding:6px 11px; text-align:center;">ABRIR PEDALEIRA ↗</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div id="3a" style="display:flex; flex-direction:column; gap:12px; flex:0 0 1080px; width:1080px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; background:#1f2321; color:#f3f1ec; padding:4px 9px; border-radius:2px;">3a</span>
+        <span style="font-size:13px; color:#4a4842; font-weight:600;">Pedaleira &amp; Efeitos — cadeia de sinal da guitarra ao amplificador</span>
+      </div>
+
+      <div style="background:#f4f2ec; border:1px solid #ccc7ba; border-radius:6px; overflow:hidden; box-shadow:0 24px 60px -30px rgba(31,35,33,.45); font-family:'Archivo',system-ui,sans-serif;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 22px; background:#1f2321; color:#f3f1ec;">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div style="width:34px; height:34px; border-radius:3px; background:#d9563a; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:15px; color:#1f2321;">FF</div>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <div style="font-size:16px; font-weight:800; letter-spacing:.02em;">FretFlow</div>
+              <div style="font-size:11px; color:#9c988f; font-family:'IBM Plex Mono',monospace;">Pedaleira &amp; efeitos DSP · 6 blocos em série</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:14px; font-family:'IBM Plex Mono',monospace; font-size:11px;">
+            <div style="display:flex; align-items:center; gap:8px; border:1px solid #3a3f3c; padding:6px 10px; border-radius:3px;">
+              <span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; animation:fretpulse 1.8s infinite;"></span>
+              <span style="color:#cfcbc2;">INPUT 1 · 5.2 ms</span>
+            </div>
+            <div style="background:#7fbf4d; color:#1f2321; padding:7px 12px; border-radius:3px; font-weight:700;">ÁUDIO ATIVO</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:224px 1fr;">
+          <div style="background:#e9e5da; border-right:1px solid #ccc7ba; padding:18px 14px; display:flex; flex-direction:column; gap:4px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; color:#8a867a; padding:0 8px 10px;">MÓDULOS</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Afinador &amp; Prática</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:800; background:#1f2321; color:#f3f1ec;">Pedaleira &amp; Efeitos</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Treino de Acordes</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Trilha &amp; Métodos</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Escalas &amp; Modos</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Guitar Pro Tabs</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Arcade de Notas</div>
+            <div style="padding:10px 12px; border-radius:3px; font-size:13px; font-weight:600; color:#3d3a34;">Modo YouTube</div>
+
+            <div style="margin-top:20px; border-top:1px solid #d5d0c3; padding-top:16px; display:flex; flex-direction:column; gap:8px;">
+              <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.16em; color:#8a867a; padding:0 8px;">MEUS PRESETS</div>
+              <div style="font-size:12px; color:#3d3a34; padding:7px 12px; background:#d9563a; color:#2a140e; font-weight:700; border-radius:3px;">Eddie Van Halen</div>
+              <div style="font-size:12px; color:#4a4842; padding:7px 12px;">Som Natural (Clean)</div>
+              <div style="font-size:12px; color:#4a4842; padding:7px 12px;">The Police</div>
+              <div style="font-size:12px; color:#4a4842; padding:7px 12px;">Jimi Hendrix</div>
+              <div style="font-size:12px; color:#4a4842; padding:7px 12px;">Blues de Quarto</div>
+              <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8a867a; padding:8px 12px 0;">+ novo preset</div>
+            </div>
+          </div>
+
+          <div style="padding:24px; display:flex; flex-direction:column; gap:20px; background:#f4f2ec;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
+              <div>
+                <div style="font-size:22px; font-weight:800; color:#1f2321; letter-spacing:-.01em;">Cadeia de sinal</div>
+                <div style="font-size:13px; color:#6b6860; margin-top:2px;">Arraste os pedais para reordenar. Clique no bloco para abrir os controles completos.</div>
+              </div>
+              <div style="display:flex; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:11px;">
+                <span style="background:#1f2321; color:#f3f1ec; padding:8px 12px; border-radius:2px; font-weight:700;">A/B COMPARAR</span>
+                <span style="background:#fffefa; border:1px solid #d5d0c3; color:#4a4842; padding:8px 12px; border-radius:2px;">SALVAR PRESET</span>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:stretch; gap:10px;">
+              <div style="width:74px; background:#e9e5da; border:1px dashed #c6c0b1; border-radius:4px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:10px;">
+                <span style="width:22px; height:22px; border-radius:50%; border:3px solid #1f2321;"></span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; text-align:center; color:#6b6860; line-height:1.3;">IN<br>GUITARRA</span>
+              </div>
+
+              <div style="flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+                <div style="background:#c9cfd2; border-radius:4px; border:1px solid #a9b0b3; padding:14px; display:flex; flex-direction:column; gap:12px; color:#1a2124;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.08em;">NOISE GATE</span>
+                    <span style="width:8px; height:8px; border-radius:50%; background:#3f7a26; box-shadow:0 0 6px #7fbf4d;"></span>
+                  </div>
+                  <div style="display:flex; gap:12px; align-items:center;">
+                    <div style="width:48px; height:48px; border-radius:50%; background:#f4f2ec; border:3px solid #1a2124; position:relative;">
+                      <span style="position:absolute; left:50%; top:3px; width:2px; height:15px; background:#1a2124; transform:translateX(-50%) rotate(-35deg); transform-origin:bottom center;"></span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:2px; font-family:'IBM Plex Mono',monospace;">
+                      <span style="font-size:10px; color:#4a5457;">THRESHOLD</span>
+                      <span style="font-size:15px; font-weight:700;">-48 dB</span>
+                    </div>
+                  </div>
+                  <div style="background:#1a2124; color:#f4f2ec; text-align:center; padding:7px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">LIGADO · 1</div>
+                </div>
+
+                <div style="background:#3f7a26; border-radius:4px; border:1px solid #2c5a1a; padding:14px; display:flex; flex-direction:column; gap:12px; color:#f4f2ec;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.08em;">TS-808 DRIVE</span>
+                    <span style="width:8px; height:8px; border-radius:50%; background:#d9ff9a; box-shadow:0 0 6px #d9ff9a;"></span>
+                  </div>
+                  <div style="display:flex; gap:10px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                      <div style="width:44px; height:44px; border-radius:50%; background:#f4f2ec; border:3px solid #1f2f14; position:relative;">
+                        <span style="position:absolute; left:50%; top:3px; width:2px; height:14px; background:#1f2f14; transform:translateX(-50%) rotate(40deg); transform-origin:bottom center;"></span>
+                      </div>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px;">DRIVE 6.5</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                      <div style="width:44px; height:44px; border-radius:50%; background:#f4f2ec; border:3px solid #1f2f14; position:relative;">
+                        <span style="position:absolute; left:50%; top:3px; width:2px; height:14px; background:#1f2f14; transform:translateX(-50%) rotate(-10deg); transform-origin:bottom center;"></span>
+                      </div>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px;">TONE 5.0</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                      <div style="width:44px; height:44px; border-radius:50%; background:#f4f2ec; border:3px solid #1f2f14; position:relative;">
+                        <span style="position:absolute; left:50%; top:3px; width:2px; height:14px; background:#1f2f14; transform:translateX(-50%) rotate(15deg); transform-origin:bottom center;"></span>
+                      </div>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px;">LEVEL 7</span>
+                    </div>
+                  </div>
+                  <div style="background:#1f2f14; text-align:center; padding:7px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">LIGADO · 2</div>
+                </div>
+
+                <div style="background:#d9563a; border-radius:4px; border:1px solid #a63e26; padding:14px; display:flex; flex-direction:column; gap:12px; color:#2a140e;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.08em;">PHASE 90</span>
+                    <span style="width:8px; height:8px; border-radius:50%; background:#ffe9a3; box-shadow:0 0 6px #ffd166;"></span>
+                  </div>
+                  <div style="display:flex; gap:12px; align-items:center;">
+                    <div style="width:48px; height:48px; border-radius:50%; background:#f4f2ec; border:3px solid #2a140e; position:relative;">
+                      <span style="position:absolute; left:50%; top:3px; width:2px; height:15px; background:#2a140e; transform:translateX(-50%) rotate(60deg); transform-origin:bottom center;"></span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:2px; font-family:'IBM Plex Mono',monospace;">
+                      <span style="font-size:10px; opacity:.75;">SPEED</span>
+                      <span style="font-size:15px; font-weight:700;">4.2 Hz</span>
+                    </div>
+                  </div>
+                  <div style="background:#2a140e; color:#f4f2ec; text-align:center; padding:7px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">LIGADO · 3</div>
+                </div>
+
+                <div style="background:#e9e5da; border-radius:4px; border:1px solid #cfc9ba; padding:14px; display:flex; flex-direction:column; gap:12px; color:#8a867a;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.08em;">BF-2 FLANGER</span>
+                    <span style="width:8px; height:8px; border-radius:50%; background:#c6c0b1;"></span>
+                  </div>
+                  <div style="display:flex; gap:10px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                      <div style="width:44px; height:44px; border-radius:50%; background:#f4f2ec; border:3px solid #c6c0b1; position:relative;">
+                        <span style="position:absolute; left:50%; top:3px; width:2px; height:14px; background:#c6c0b1; transform:translateX(-50%) rotate(-25deg); transform-origin:bottom center;"></span>
+                      </div>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px;">RATE</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                      <div style="width:44px; height:44px; border-radius:50%; background:#f4f2ec; border:3px solid #c6c0b1; position:relative;">
+                        <span style="position:absolute; left:50%; top:3px; width:2px; height:14px; background:#c6c0b1; transform:translateX(-50%) rotate(20deg); transform-origin:bottom center;"></span>
+                      </div>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px;">DEPTH</span>
+                    </div>
+                  </div>
+                  <div style="border:1px solid #cfc9ba; text-align:center; padding:6px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">BYPASS · 4</div>
+                </div>
+
+                <div style="background:#e9e5da; border-radius:4px; border:1px solid #cfc9ba; padding:14px; display:flex; flex-direction:column; gap:12px; color:#8a867a;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.08em;">DELAY ESTÉREO</span>
+                    <span style="width:8px; height:8px; border-radius:50%; background:#c6c0b1;"></span>
+                  </div>
+                  <div style="display:flex; gap:10px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                      <div style="width:44px; height:44px; border-radius:50%; background:#f4f2ec; border:3px solid #c6c0b1; position:relative;">
+                        <span style="position:absolute; left:50%; top:3px; width:2px; height:14px; background:#c6c0b1; transform:translateX(-50%) rotate(0deg); transform-origin:bottom center;"></span>
+                      </div>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px;">TIME</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                      <div style="width:44px; height:44px; border-radius:50%; background:#f4f2ec; border:3px solid #c6c0b1; position:relative;">
+                        <span style="position:absolute; left:50%; top:3px; width:2px; height:14px; background:#c6c0b1; transform:translateX(-50%) rotate(-40deg); transform-origin:bottom center;"></span>
+                      </div>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px;">MIX</span>
+                    </div>
+                  </div>
+                  <div style="border:1px solid #cfc9ba; text-align:center; padding:6px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">BYPASS · 5</div>
+                </div>
+
+                <div style="background:#1f2321; border-radius:4px; border:1px solid #11140f; padding:14px; display:flex; flex-direction:column; gap:12px; color:#f3f1ec;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.08em; color:#e8a325;">'65 TWIN REVERB</span>
+                    <span style="width:8px; height:8px; border-radius:50%; background:#e8a325; box-shadow:0 0 6px #e8a325;"></span>
+                  </div>
+                  <div style="flex:1; background:repeating-linear-gradient(45deg,#2f332c,#2f332c 3px,#272b25 3px,#272b25 6px); border:1px solid #3a3f3c; border-radius:2px; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#9c988f; min-height:56px;">
+                    CAB 2x12 · MIC SM57
+                  </div>
+                  <div style="background:#e8a325; color:#1f2321; text-align:center; padding:7px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:700;">AMP · 6</div>
+                </div>
+              </div>
+
+              <div style="width:74px; background:#e9e5da; border:1px dashed #c6c0b1; border-radius:4px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:10px;">
+                <span style="width:22px; height:22px; border-radius:50%; border:3px solid #1f2321;"></span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; text-align:center; color:#6b6860; line-height:1.3;">OUT<br>FONE</span>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:20px;">
+              <div style="flex:1; background:#fffefa; border:1px solid #d5d0c3; border-radius:4px; padding:18px 20px; display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; color:#8a867a;">MEDIDORES</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#3f7a26;">SEM CLIP</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:9px;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#6b6860; width:34px;">IN</span>
+                    <div style="flex:1; height:10px; background:#eae6da; border:1px solid #d5d0c3;">
+                      <div style="width:62%; height:100%; background:#3f7a26;"></div>
+                    </div>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#4a4842; width:48px; text-align:right;">-12 dB</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#6b6860; width:34px;">DRIVE</span>
+                    <div style="flex:1; height:10px; background:#eae6da; border:1px solid #d5d0c3;">
+                      <div style="width:80%; height:100%; background:#d9563a;"></div>
+                    </div>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#4a4842; width:48px; text-align:right;">-4 dB</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#6b6860; width:34px;">OUT</span>
+                    <div style="flex:1; height:10px; background:#eae6da; border:1px solid #d5d0c3;">
+                      <div style="width:70%; height:100%; background:#3f7a26;"></div>
+                    </div>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#4a4842; width:48px; text-align:right;">-8 dB</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="width:300px; background:#fffefa; border:1px solid #d5d0c3; border-radius:4px; padding:18px 20px; display:flex; flex-direction:column; gap:12px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; color:#8a867a;">ATALHOS</span>
+                <div style="display:flex; flex-direction:column; gap:8px; font-size:12px; color:#4a4842;">
+                  <div style="display:flex; justify-content:space-between;"><span>Ligar/desligar pedal</span><span style="font-family:'IBM Plex Mono',monospace; background:#eae6da; padding:2px 7px;">1 – 6</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>Bypass total</span><span style="font-family:'IBM Plex Mono',monospace; background:#eae6da; padding:2px 7px;">Espaço</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>Trocar preset</span><span style="font-family:'IBM Plex Mono',monospace; background:#eae6da; padding:2px 7px;">← →</span></div>
+                  <div style="display:flex; justify-content:space-between;"><span>Afinador rápido</span><span style="font-family:'IBM Plex Mono',monospace; background:#eae6da; padding:2px 7px;">T</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#1f2321; border-top:2px solid #d9563a; padding:12px 22px; display:flex; align-items:stretch; gap:18px; font-family:'IBM Plex Mono',monospace; color:#f3f1ec;">
+          <div style="display:flex; align-items:center; gap:12px; padding-right:18px; border-right:1px solid #3a3f3c;">
+            <span style="font-size:15px; color:#6b6f6b;">‹</span>
+            <div style="display:flex; flex-direction:column; gap:3px; min-width:132px;">
+              <span style="font-size:9px; letter-spacing:.18em; color:#8a8e88;">PRESET ATIVO</span>
+              <span style="font-size:13px; font-weight:700;">Eddie Van Halen ⌄</span>
+            </div>
+            <span style="font-size:15px; color:#6b6f6b;">›</span>
+          </div>
+          <div style="flex:1; display:flex; gap:8px;">
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #7fbf4d; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:10px; font-weight:700;">GATE</span><span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; box-shadow:0 0 6px #7fbf4d;"></span></div>
+              <span style="font-size:9px; color:#8a8e88;">1 · -48 dB</span>
+            </div>
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #7fbf4d; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:10px; font-weight:700;">TS-808</span><span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; box-shadow:0 0 6px #7fbf4d;"></span></div>
+              <span style="font-size:9px; color:#8a8e88;">2 · drive 6.5</span>
+            </div>
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #7fbf4d; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:10px; font-weight:700;">PHASE 90</span><span style="width:7px; height:7px; border-radius:50%; background:#7fbf4d; box-shadow:0 0 6px #7fbf4d;"></span></div>
+              <span style="font-size:9px; color:#8a8e88;">3 · speed 4</span>
+            </div>
+            <div style="flex:1; background:#22261f; border-top:2px solid #43473f; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:10px; font-weight:700; color:#8a8e88;">FLANGER</span><span style="width:7px; height:7px; border-radius:50%; background:#43473f;"></span></div>
+              <span style="font-size:9px; color:#6b6f6b;">4 · bypass</span>
+            </div>
+            <div style="flex:1; background:#22261f; border-top:2px solid #43473f; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:10px; font-weight:700; color:#8a8e88;">DELAY</span><span style="width:7px; height:7px; border-radius:50%; background:#43473f;"></span></div>
+              <span style="font-size:9px; color:#6b6f6b;">5 · bypass</span>
+            </div>
+            <div style="flex:1; background:#2a2f2c; border-top:2px solid #e8a325; padding:8px 10px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:10px; font-weight:700;">TWIN '65</span><span style="width:7px; height:7px; border-radius:50%; background:#e8a325; box-shadow:0 0 6px #e8a325;"></span></div>
+              <span style="font-size:9px; color:#8a8e88;">6 · cab 2x12</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:14px; padding-left:18px; border-left:1px solid #3a3f3c;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+              <div style="width:40px; height:40px; border-radius:50%; background:#f3f1ec; border:3px solid #d9563a; position:relative;">
+                <span style="position:absolute; left:50%; top:4px; width:2px; height:12px; background:#1f2321; transform:translateX(-50%) rotate(28deg); transform-origin:bottom center;"></span>
+              </div>
+              <span style="font-size:9px; color:#8a8e88;">DRIVE</span>
+            </div>
+            <span style="background:#d9563a; color:#1f2321; font-size:10px; font-weight:700; padding:6px 11px;">BYPASS TOTAL · ESPAÇO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+</body>
+</html>
