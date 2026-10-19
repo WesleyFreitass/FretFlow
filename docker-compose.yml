@@ -1,0 +1,9 @@
+services:
+  fretflow:
+    build: .
+    container_name: fretflow
+    restart: always
+    ports:
+      - "3090:80"
+    environment:
+      - NODE_ENV=production
