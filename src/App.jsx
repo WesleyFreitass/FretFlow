@@ -86,10 +86,8 @@ export default function App() {
       
       {/* 1. TOPBAR BOUTIQUE CHASSIS */}
       <header className="flex items-center justify-between px-6 py-3.5 bg-oficina-chassis text-[#f3f1ec] border-b border-[#3a3f3c] z-50 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-sm bg-oficina-terracotta flex items-center justify-center p-1 shadow-sm shrink-0">
-            <img src="/icon.png" alt="FretFlow" className="w-6 h-6 object-contain filter invert" />
-          </div>
+        <div className="flex items-center gap-3.5">
+          <img src="/icon.png" alt="FretFlow" className="w-10 h-10 object-contain shrink-0 drop-shadow-md" />
           <div className="flex flex-col">
             <div className="text-base font-extrabold tracking-wide leading-tight">FretFlow</div>
             <div className="text-[11px] text-[#9c988f] font-mono leading-tight">Estúdio de guitarra, efeitos DSP &amp; aprendizado</div>

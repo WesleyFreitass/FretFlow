@@ -31,9 +31,7 @@ export default function Header({
     <header className="bg-[#111827]/90 backdrop-blur border-b border-slate-800/80 sticky top-0 z-40 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
       {/* Brand Logo */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#090d16] border border-slate-700/80 p-1.5 shadow-lg shadow-black/40 flex items-center justify-center">
-          <img src="/icon.png" alt="FretFlow Icon" className="w-full h-full object-contain" />
-        </div>
+        <img src="/icon.png" alt="FretFlow Icon" className="w-10 h-10 object-contain shrink-0 drop-shadow-md" />
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-1">
