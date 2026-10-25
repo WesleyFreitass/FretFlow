@@ -3,7 +3,6 @@ import {
   Radio, 
   Flame, 
   Sparkles, 
-  Video, 
   Gamepad2,
   Settings, 
   Guitar, 
@@ -66,11 +65,6 @@ export default function Sidebar({
       id: 'hero', 
       label: 'Arcade de Notas (Hero)', 
       icon: Gamepad2
-    },
-    { 
-      id: 'youtube', 
-      label: 'Modo YouTube', 
-      icon: Video
     },
     {
       id: 'kanban',

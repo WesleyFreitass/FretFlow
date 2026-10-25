@@ -19,7 +19,11 @@ import {
   Layers,
   FolderOpen,
   Volume2,
-  Music
+  VolumeX,
+  Music,
+  Repeat,
+  Timer,
+  Headphones
 } from 'lucide-react';
 import { searchSongsterr, loadSongsterrTab } from '../services/songsterrService';
 
@@ -54,14 +58,14 @@ const CURATED_SONGS = [
     trackName: "James Hetfield | Lead Guitar"
   },
   {
-    songId: 757,
+    songId: 447,
     title: "Hotel California",
     artist: "Eagles",
     genre: "Classic Rock",
     trackName: "Acoustic / 12-String"
   },
   {
-    songId: 588,
+    songId: 1024,
     title: "Back In Black",
     artist: "AC/DC",
     genre: "Hard Rock",
@@ -89,6 +93,15 @@ export default function GuitarProTab({
   const [currentTimeSec, setCurrentTimeSec] = useState(0);
   const [totalTimeSec, setTotalTimeSec] = useState(0);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  // Practice Tools State: Count-in, Metronome, Play-Along, Loop A-B
+  const [isCountInEnabled, setIsCountInEnabled] = useState(true);
+  const [isMetronomeEnabled, setIsMetronomeEnabled] = useState(false);
+  const [isPlayAlong, setIsPlayAlong] = useState(false);
+  const [isLoopEnabled, setIsLoopEnabled] = useState(false);
+  const [loopStartBar, setLoopStartBar] = useState(1);
+  const [loopEndBar, setLoopEndBar] = useState(8);
+  const [totalBars, setTotalBars] = useState(1);
 
   // Search Modal & Query State
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
@@ -175,6 +188,15 @@ export default function GuitarProTab({
           if (foundIdx >= 0) defaultIdx = foundIdx;
         }
 
+        const barCount = score.masterBars?.length || 1;
+        setTotalBars(barCount);
+        setLoopStartBar(1);
+        setLoopEndBar(Math.min(8, barCount));
+
+        // Sync player settings
+        api.countInVolume = isCountInEnabled ? 1 : 0;
+        api.metronomeVolume = isMetronomeEnabled ? 1 : 0;
+
         setSelectedTrackIndex(defaultIdx);
         setLoadedScoreInfo({
           title: score.title || 'Partitura Carregada',
@@ -187,6 +209,9 @@ export default function GuitarProTab({
         if (score.tracks && score.tracks[defaultIdx]) {
           try {
             api.renderTracks([score.tracks[defaultIdx]]);
+            if (isPlayAlong) {
+              api.changeTrackMute([score.tracks[defaultIdx]], true);
+            }
           } catch (_) {}
         }
       });
@@ -213,8 +238,6 @@ export default function GuitarProTab({
         setIsLoadingFile(false);
         setErrorMessage(`Não foi possível abrir este arquivo: ${err.message || 'formato incompatível'}`);
       });
-
-      // NOTE: No default tab is loaded on mount. Starts completely clean!
 
     } catch (e) {
       console.warn('Erro ao inicializar AlphaTab:', e);
@@ -300,7 +323,6 @@ export default function GuitarProTab({
   const handlePlayPause = async () => {
     if (!alphaTabApiRef.current) return;
     try {
-      // Resume Web Audio AudioContext if it was suspended by browser autoplay policy
       if (window.AudioContext || window.webkitAudioContext) {
         try {
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -333,15 +355,97 @@ export default function GuitarProTab({
     setSelectedTrackIndex(trackIndex);
     if (!alphaTabApiRef.current || !alphaTabApiRef.current.score) return;
 
+    const tracks = alphaTabApiRef.current.score.tracks || [];
     try {
       if (trackIndex === -1) {
-        alphaTabApiRef.current.renderTracks(alphaTabApiRef.current.score.tracks);
-      } else if (alphaTabApiRef.current.score.tracks[trackIndex]) {
-        alphaTabApiRef.current.renderTracks([alphaTabApiRef.current.score.tracks[trackIndex]]);
+        alphaTabApiRef.current.renderTracks(tracks);
+      } else if (tracks[trackIndex]) {
+        alphaTabApiRef.current.renderTracks([tracks[trackIndex]]);
+        if (isPlayAlong) {
+          // Unmute other tracks, mute only the active lead guitar track
+          alphaTabApiRef.current.changeTrackMute(tracks, false);
+          alphaTabApiRef.current.changeTrackMute([tracks[trackIndex]], true);
+        }
       }
     } catch (err) {
       console.error("Erro ao trocar instrumento:", err);
     }
+  };
+
+  // --- PRACTICE TOOLS HANDLERS ---
+  const handleToggleCountIn = () => {
+    const next = !isCountInEnabled;
+    setIsCountInEnabled(next);
+    if (alphaTabApiRef.current) {
+      alphaTabApiRef.current.countInVolume = next ? 1 : 0;
+    }
+  };
+
+  const handleToggleMetronome = () => {
+    const next = !isMetronomeEnabled;
+    setIsMetronomeEnabled(next);
+    if (alphaTabApiRef.current) {
+      alphaTabApiRef.current.metronomeVolume = next ? 1 : 0;
+    }
+  };
+
+  const handleTogglePlayAlong = () => {
+    const next = !isPlayAlong;
+    setIsPlayAlong(next);
+    if (!alphaTabApiRef.current || !alphaTabApiRef.current.score) return;
+
+    const tracks = alphaTabApiRef.current.score.tracks || [];
+    const targetTrack = tracks[selectedTrackIndex] || tracks[0];
+    if (targetTrack) {
+      alphaTabApiRef.current.changeTrackMute([targetTrack], next);
+    }
+  };
+
+  const applyLoop = (startBar, endBar, enabled) => {
+    if (!alphaTabApiRef.current || !alphaTabApiRef.current.score) return;
+    const masterBars = alphaTabApiRef.current.score.masterBars || [];
+    if (masterBars.length === 0) return;
+
+    if (!enabled) {
+      alphaTabApiRef.current.playbackRange = null;
+      alphaTabApiRef.current.isLooping = false;
+      return;
+    }
+
+    const sIdx = Math.max(0, Math.min(masterBars.length - 1, startBar - 1));
+    const eIdx = Math.max(sIdx, Math.min(masterBars.length - 1, endBar - 1));
+
+    const startTick = masterBars[sIdx].start;
+    const endBarObj = masterBars[eIdx];
+    const endTick = endBarObj.start + endBarObj.calculateDuration();
+
+    alphaTabApiRef.current.playbackRange = { startTick, endTick };
+    alphaTabApiRef.current.isLooping = true;
+  };
+
+  const handleToggleLoop = () => {
+    const next = !isLoopEnabled;
+    setIsLoopEnabled(next);
+    applyLoop(loopStartBar, loopEndBar, next);
+  };
+
+  const handleLoopStartChange = (val) => {
+    const s = Math.max(1, Math.min(loopEndBar, val));
+    setLoopStartBar(s);
+    if (isLoopEnabled) applyLoop(s, loopEndBar, true);
+  };
+
+  const handleLoopEndChange = (val) => {
+    const e = Math.max(loopStartBar, Math.min(totalBars, val));
+    setLoopEndBar(e);
+    if (isLoopEnabled) applyLoop(loopStartBar, e, true);
+  };
+
+  const handleSetLoopPreset = (s, e) => {
+    setLoopStartBar(s);
+    setLoopEndBar(e);
+    setIsLoopEnabled(true);
+    applyLoop(s, e, true);
   };
 
   // Upload local GP file
@@ -353,12 +457,12 @@ export default function GuitarProTab({
     setIsLoadingFile(true);
     setLoadingStatusText(`Carregando ${file.name}...`);
     setActiveSongsterrId(null);
+    setCustomTabName(file.name); // Set customTabName immediately so hasLoadedTab becomes true
 
     const reader = new FileReader();
     reader.onload = (event) => {
       const buffer = event.target?.result;
       if (buffer && alphaTabApiRef.current) {
-        setCustomTabName(file.name);
         try {
           const uint8Data = new Uint8Array(buffer);
           alphaTabApiRef.current.load(uint8Data);
@@ -374,6 +478,11 @@ export default function GuitarProTab({
       setErrorMessage("Erro ao ler o arquivo do seu computador.");
     };
     reader.readAsArrayBuffer(file);
+
+    setTimeout(() => {
+      setIsLoadingFile(false);
+      setIsAlphaTabReady(true);
+    }, 1000);
   };
 
   // Drag & drop GP file directly onto window/container
@@ -404,10 +513,26 @@ export default function GuitarProTab({
       setActiveSongsterrId(songId);
       setCustomTabName(null);
 
+      setLoadingStatusText("Renderizando tablatura e preparando áudio...");
+
+      // Update score info immediately so hasLoadedTab becomes true
+      setLoadedScoreInfo({
+        title: result.title,
+        artist: result.artist,
+        tempo: result.tempo || 120,
+        tracks: result.tracks || []
+      });
+
       if (alphaTabApiRef.current) {
-        setLoadingStatusText("Renderizando tablatura e preparando áudio...");
         alphaTabApiRef.current.tex(result.alphaTex);
       }
+
+      // Safety timeout to guarantee the loading overlay dismisses
+      setTimeout(() => {
+        setIsLoadingFile(false);
+        setIsAlphaTabReady(true);
+      }, 700);
+
     } catch (err) {
       console.error("Erro ao carregar música do Songsterr:", err);
       setIsLoadingFile(false);
@@ -427,6 +552,8 @@ export default function GuitarProTab({
     setCustomTabName(null);
     setActiveSongsterrId(null);
     setIsPlaying(false);
+    setIsLoopEnabled(false);
+    setIsPlayAlong(false);
     setCurrentProgress(0);
     setCurrentTimeSec(0);
     setErrorMessage(null);
@@ -448,7 +575,7 @@ export default function GuitarProTab({
     >
       
       {/* 1. TOP CONTROLS & TRANSPORT BAR */}
-      <div className="bg-oficina-card border border-oficina-border rounded-sm p-4 lg:p-5 shadow-sm space-y-4">
+      <div className="bg-oficina-card border border-oficina-border rounded-sm p-4 lg:p-5 shadow-sm space-y-3.5">
         
         {/* Header Title & Actions */}
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -488,7 +615,7 @@ export default function GuitarProTab({
               </div>
               <p className="text-xs text-oficina-bodyText mt-0.5">
                 {hasLoadedTab 
-                  ? `Andamento: ${loadedScoreInfo.tempo} BPM. Partitura, tablatura e sintetizador sincronizados.`
+                  ? `Andamento: ${loadedScoreInfo.tempo} BPM. Partitura, tablatura e ferramentas de treino sincronizadas.`
                   : 'Pesquise milhões de músicas online ou abra seu arquivo (.gp3, .gp4, .gp5, .gpx) sem complicação.'}
               </p>
             </div>
@@ -544,7 +671,7 @@ export default function GuitarProTab({
           </div>
         )}
 
-        {/* Transport Toolbar (Shown when a tab is loaded) */}
+        {/* 1.1 Transport Toolbar (Play, Pause, Stop, Time, Speed, Track, Stave, Zoom) */}
         {hasLoadedTab && (
           <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-oficina-borderLight">
             
@@ -553,7 +680,7 @@ export default function GuitarProTab({
               <button
                 onClick={handlePlayPause}
                 disabled={isLoadingFile}
-                className={`px-4 py-1.5 rounded-sm font-bold flex items-center gap-1.5 shadow-sm transition ${
+                className={`px-4 py-1.5 rounded-sm font-bold flex items-center gap-1.5 shadow-sm transition cursor-pointer ${
                   isPlaying
                     ? 'bg-oficina-amber text-oficina-darkText font-black'
                     : 'bg-oficina-olive text-white font-black hover:brightness-105'
@@ -683,110 +810,225 @@ export default function GuitarProTab({
           </div>
         )}
 
+        {/* 1.2 Dedicated Practice Toolbar (Count-In, Metrônomo, Loop A-B, Play-Along) */}
+        {hasLoadedTab && (
+          <div className="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-oficina-borderLight font-mono text-xs">
+            
+            {/* Left Tools: Play-Along, Count-in, Metronome */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Play-Along Toggle */}
+              <button
+                onClick={handleTogglePlayAlong}
+                className={`px-3 py-1.5 rounded-sm font-bold flex items-center gap-1.5 transition cursor-pointer border ${
+                  isPlayAlong
+                    ? 'bg-amber-100 text-amber-950 border-amber-400 shadow-2xs'
+                    : 'bg-oficina-surface text-oficina-bodyText border-oficina-border hover:text-oficina-darkText hover:bg-[#fffefa]'
+                }`}
+                title="Muta a faixa de guitarra principal para você tocar com a banda"
+              >
+                {isPlayAlong ? (
+                  <VolumeX className="w-3.5 h-3.5 text-amber-700" />
+                ) : (
+                  <Headphones className="w-3.5 h-3.5 text-oficina-olive" />
+                )}
+                <span>{isPlayAlong ? 'Play-Along Ativo: Guitarra Mutada (Toque Você!)' : 'Modo Play-Along'}</span>
+              </button>
+
+              {/* Count-In Toggle */}
+              <button
+                onClick={handleToggleCountIn}
+                className={`px-2.5 py-1.5 rounded-sm font-bold flex items-center gap-1.5 transition cursor-pointer border ${
+                  isCountInEnabled
+                    ? 'bg-oficina-oliveLight text-oficina-olive border-oficina-olive/40'
+                    : 'bg-oficina-surface text-oficina-mutedText border-oficina-border hover:text-oficina-bodyText'
+                }`}
+                title="Toca 4 cliques de baqueta/contagem antes de começar a música"
+              >
+                <Timer className="w-3.5 h-3.5" />
+                <span>Contagem 4T: {isCountInEnabled ? 'LIGADA' : 'DESL.'}</span>
+              </button>
+
+              {/* Metronome Toggle */}
+              <button
+                onClick={handleToggleMetronome}
+                className={`px-2.5 py-1.5 rounded-sm font-bold flex items-center gap-1.5 transition cursor-pointer border ${
+                  isMetronomeEnabled
+                    ? 'bg-oficina-oliveLight text-oficina-olive border-oficina-olive/40'
+                    : 'bg-oficina-surface text-oficina-mutedText border-oficina-border hover:text-oficina-bodyText'
+                }`}
+                title="Ativar clique contínuo de metrônomo durante toda a execução"
+              >
+                <span>Metrônomo: {isMetronomeEnabled ? 'ON' : 'OFF'}</span>
+              </button>
+            </div>
+
+            {/* Right Tools: Loop A-B Riff Repeater */}
+            <div className="flex items-center gap-2 flex-wrap bg-oficina-surface px-2.5 py-1 rounded-sm border border-oficina-border">
+              <button
+                onClick={handleToggleLoop}
+                className={`px-2 py-0.5 rounded-[2px] font-bold flex items-center gap-1 transition cursor-pointer ${
+                  isLoopEnabled
+                    ? 'bg-oficina-chassis text-[#f3f1ec]'
+                    : 'text-oficina-bodyText hover:text-oficina-darkText'
+                }`}
+                title="Repetir trecho de compassos em loop contínuo"
+              >
+                <Repeat className="w-3.5 h-3.5" />
+                <span>Loop A-B</span>
+              </button>
+
+              {isLoopEnabled && (
+                <div className="flex items-center gap-1.5 text-[11px]">
+                  <span className="text-oficina-mutedText">Compasso:</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={loopEndBar}
+                    value={loopStartBar}
+                    onChange={(e) => handleLoopStartChange(parseInt(e.target.value) || 1)}
+                    className="w-11 bg-oficina-card border border-oficina-border rounded-[2px] px-1 py-0.5 text-center font-bold text-oficina-darkText"
+                  />
+                  <span className="text-oficina-mutedText">até</span>
+                  <input
+                    type="number"
+                    min={loopStartBar}
+                    max={totalBars}
+                    value={loopEndBar}
+                    onChange={(e) => handleLoopEndChange(parseInt(e.target.value) || totalBars)}
+                    className="w-11 bg-oficina-card border border-oficina-border rounded-[2px] px-1 py-0.5 text-center font-bold text-oficina-darkText"
+                  />
+                  <span className="text-[10px] text-oficina-mutedText">/ {totalBars}</span>
+                  
+                  {/* Quick preset chips */}
+                  <div className="flex items-center gap-1 ml-1 border-l border-oficina-border pl-1.5">
+                    <button
+                      onClick={() => handleSetLoopPreset(1, Math.min(4, totalBars))}
+                      className="px-1.5 py-0.5 text-[9px] bg-oficina-card hover:bg-[#fffefa] border border-oficina-border rounded-[2px] font-bold text-oficina-bodyText cursor-pointer"
+                    >
+                      1-4
+                    </button>
+                    <button
+                      onClick={() => handleSetLoopPreset(1, Math.min(8, totalBars))}
+                      className="px-1.5 py-0.5 text-[9px] bg-oficina-card hover:bg-[#fffefa] border border-oficina-border rounded-[2px] font-bold text-oficina-bodyText cursor-pointer"
+                    >
+                      1-8
+                    </button>
+                    <button
+                      onClick={() => handleSetLoopPreset(1, totalBars)}
+                      className="px-1.5 py-0.5 text-[9px] bg-oficina-card hover:bg-[#fffefa] border border-oficina-border rounded-[2px] font-bold text-oficina-bodyText cursor-pointer"
+                    >
+                      Tudo
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
       </div>
 
-      {/* 2. MAIN STAGE: EMPTY STATE vs ALPHATAB VIEWER */}
-      {!hasLoadedTab ? (
-        /* CLEAN EMPTY STATE / HUB */
-        <div className="bg-oficina-card border border-oficina-border rounded-sm p-8 lg:p-12 shadow-sm text-center space-y-8 animate-fadeIn">
-          
-          {/* Hero Header */}
-          <div className="max-w-xl mx-auto space-y-3">
-            <div className="w-14 h-14 mx-auto rounded-full bg-oficina-surface border border-oficina-border flex items-center justify-center text-oficina-olive shadow-2xs">
-              <Music2 className="w-7 h-7" />
+      {/* 2. MAIN STAGE */}
+      <div className="bg-oficina-card border border-oficina-border rounded-sm p-6 lg:p-8 shadow-sm overflow-x-auto min-h-[550px] relative">
+        
+        {/* If no tab is loaded, display the Empty State / Search Hub right here */}
+        {!hasLoadedTab && (
+          <div className="max-w-4xl mx-auto py-6 text-center space-y-8 animate-fadeIn">
+            
+            {/* Hero Header */}
+            <div className="max-w-xl mx-auto space-y-3">
+              <div className="w-14 h-14 mx-auto rounded-full bg-oficina-surface border border-oficina-border flex items-center justify-center text-oficina-olive shadow-2xs">
+                <Music2 className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-black text-oficina-darkText">
+                Pronto para Tocar com Partitura e Tablatura
+              </h3>
+              <p className="text-sm text-oficina-bodyText leading-relaxed">
+                Pesquise qualquer música no catálogo online do Songsterr ou arraste um arquivo Guitar Pro (<span className="font-mono text-xs font-bold text-oficina-darkText">.gp3, .gp4, .gp5, .gpx</span>) para começar.
+              </p>
             </div>
-            <h3 className="text-xl font-black text-oficina-darkText">
-              Pronto para Tocar com Partitura e Tablatura
-            </h3>
-            <p className="text-sm text-oficina-bodyText leading-relaxed">
-              Pesquise qualquer música no catálogo online do Songsterr ou arraste um arquivo Guitar Pro (<span className="font-mono text-xs font-bold text-oficina-darkText">.gp3, .gp4, .gp5, .gpx</span>) para começar.
-            </p>
-          </div>
 
-          {/* Quick Action Center */}
-          <div className="max-w-md mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              onClick={() => setIsSearchModalOpen(true)}
-              className="p-4 bg-oficina-olive text-white rounded-sm font-mono font-bold text-xs flex flex-col items-center justify-center gap-2 shadow-sm hover:brightness-105 transition cursor-pointer"
-            >
-              <Search className="w-5 h-5" />
-              <span>Buscar Online (Songsterr)</span>
-            </button>
+            {/* Quick Action Center */}
+            <div className="max-w-md mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                onClick={() => setIsSearchModalOpen(true)}
+                className="p-4 bg-oficina-olive text-white rounded-sm font-mono font-bold text-xs flex flex-col items-center justify-center gap-2 shadow-sm hover:brightness-105 transition cursor-pointer"
+              >
+                <Search className="w-5 h-5" />
+                <span>Buscar Online (Songsterr)</span>
+              </button>
 
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="p-4 bg-oficina-surface border border-oficina-border hover:border-oficina-borderDark text-oficina-darkText rounded-sm font-mono font-bold text-xs flex flex-col items-center justify-center gap-2 shadow-2xs transition hover:bg-[#fffefa] cursor-pointer"
-            >
-              <FolderOpen className="w-5 h-5 text-oficina-terracotta" />
-              <span>Abrir do Computador</span>
-            </button>
-          </div>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="p-4 bg-oficina-surface border border-oficina-border hover:border-oficina-borderDark text-oficina-darkText rounded-sm font-mono font-bold text-xs flex flex-col items-center justify-center gap-2 shadow-2xs transition hover:bg-[#fffefa] cursor-pointer"
+              >
+                <FolderOpen className="w-5 h-5 text-oficina-terracotta" />
+                <span>Abrir do Computador</span>
+              </button>
+            </div>
 
-          {/* Curated Popular Songs */}
-          <div className="max-w-4xl mx-auto pt-6 border-t border-oficina-borderLight space-y-4">
-            <div className="flex items-center justify-between text-left">
-              <div>
-                <span className="text-xs font-extrabold uppercase tracking-wider text-oficina-mutedText font-mono flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-oficina-amber" />
-                  Músicas Populares em 1 Clique
-                </span>
-                <p className="text-xs text-oficina-bodyText mt-0.5">
-                  Clique em qualquer uma para testar o leitor imediatamente:
-                </p>
+            {/* Curated Popular Songs */}
+            <div className="max-w-4xl mx-auto pt-6 border-t border-oficina-borderLight space-y-4">
+              <div className="flex items-center justify-between text-left">
+                <div>
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-oficina-mutedText font-mono flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-oficina-amber" />
+                    Músicas Populares em 1 Clique
+                  </span>
+                  <p className="text-xs text-oficina-bodyText mt-0.5">
+                    Clique em qualquer uma para testar o leitor imediatamente:
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {CURATED_SONGS.map((song) => (
+                  <div
+                    key={song.songId}
+                    onClick={() => handleLoadSongsterrSong(song.songId)}
+                    className="p-3 bg-oficina-surface border border-oficina-border hover:border-oficina-olive/60 rounded-sm text-left transition hover:shadow-sm cursor-pointer group flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-mono font-bold text-oficina-mutedText uppercase">
+                          {song.genre}
+                        </span>
+                        <Play className="w-3.5 h-3.5 text-oficina-olive opacity-0 group-hover:opacity-100 transition" />
+                      </div>
+                      <h4 className="text-sm font-bold text-oficina-darkText mt-1 group-hover:text-oficina-olive transition">
+                        {song.title}
+                      </h4>
+                      <p className="text-xs text-oficina-mutedText font-semibold">
+                        {song.artist}
+                      </p>
+                    </div>
+                    <div className="mt-3 pt-2 border-t border-oficina-border/50 flex items-center justify-between text-[11px] font-mono text-oficina-bodyText">
+                      <span className="text-oficina-olive font-bold truncate">
+                        {song.trackName}
+                      </span>
+                      <span className="text-xs text-oficina-mutedText">Carregar →</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {CURATED_SONGS.map((song) => (
-                <div
-                  key={song.songId}
-                  onClick={() => handleLoadSongsterrSong(song.songId)}
-                  className="p-3 bg-oficina-surface border border-oficina-border hover:border-oficina-olive/60 rounded-sm text-left transition hover:shadow-sm cursor-pointer group flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono font-bold text-oficina-mutedText uppercase">
-                        {song.genre}
-                      </span>
-                      <Play className="w-3.5 h-3.5 text-oficina-olive opacity-0 group-hover:opacity-100 transition" />
-                    </div>
-                    <h4 className="text-sm font-bold text-oficina-darkText mt-1 group-hover:text-oficina-olive transition">
-                      {song.title}
-                    </h4>
-                    <p className="text-xs text-oficina-mutedText font-semibold">
-                      {song.artist}
-                    </p>
-                  </div>
-                  <div className="mt-3 pt-2 border-t border-oficina-border/50 flex items-center justify-between text-[11px] font-mono text-oficina-bodyText">
-                    <span className="text-oficina-olive font-bold truncate">
-                      {song.trackName}
-                    </span>
-                    <span className="text-xs text-oficina-mutedText">Carregar →</span>
-                  </div>
-                </div>
-              ))}
+            {/* Drag & Drop Prompt footer */}
+            <div className="pt-2 text-[11px] font-mono text-oficina-mutedText">
+              Dica: Você também pode simplesmente arrastar e soltar um arquivo <span className="font-bold">.gp5</span> em qualquer lugar desta tela!
             </div>
+
           </div>
+        )}
 
-          {/* Drag & Drop Prompt footer */}
-          <div className="pt-2 text-[11px] font-mono text-oficina-mutedText">
-            Dica: Você também pode simplesmente arrastar e soltar um arquivo <span className="font-bold">.gp5</span> em qualquer lugar desta tela!
-          </div>
-
-        </div>
-      ) : (
-        /* ALPHATAB SCORE VIEWER STAGE */
-        <div className="bg-[#ffffff] border border-oficina-border rounded-sm p-6 lg:p-8 shadow-sm overflow-x-auto min-h-[550px] relative">
-          <div ref={containerRef} className="w-full text-black relative" />
-        </div>
-      )}
-
-      {/* Hidden container ref when tab is not loaded so AlphaTab remains instantiated */}
-      {!hasLoadedTab && (
-        <div className="hidden">
-          <div ref={containerRef} />
-        </div>
-      )}
+        {/* AlphaTab score container: ALWAYS MOUNTED with real DOM dimensions (never display:none) */}
+        <div 
+          ref={containerRef} 
+          className="w-full text-black relative"
+          style={!hasLoadedTab ? { height: 0, overflow: 'hidden', opacity: 0, margin: 0, padding: 0 } : {}}
+        />
+      </div>
 
       {/* LOADING OVERLAY */}
       {isLoadingFile && (

@@ -7,7 +7,6 @@ import TunerTab from './components/TunerTab';
 import GuitarPedalboardTab from './components/GuitarPedalboardTab';
 import ChordTrainerTab from './components/ChordTrainerTab';
 import GuitarHeroTab from './components/GuitarHeroTab';
-import YouTubeSongTab from './components/YouTubeSongTab';
 import KanbanBoardTab from './components/KanbanBoardTab';
 import AudioSettingsModal from './components/AudioSettingsModal';
 import { globalAudio } from './audio/audioManager';
@@ -242,14 +241,6 @@ export default function App() {
               pitchData={audioState.pitch}
               chordData={audioState.chord}
               chromagram={audioState.chromagram}
-              isAudible={audioState.isAudible}
-            />
-          )}
-
-          {activeTab === 'youtube' && (
-            <YouTubeSongTab
-              chordData={audioState.chord}
-              pitchData={audioState.pitch}
               isAudible={audioState.isAudible}
             />
           )}

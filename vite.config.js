@@ -44,6 +44,32 @@ export default defineConfig({
             res.end(JSON.stringify([]));
             return;
           }
+          if (req.url.startsWith('/api/youtube-search')) {
+            const urlObj = new URL(req.url, 'http://localhost');
+            const q = urlObj.searchParams.get('q');
+            if (!q) {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ videoId: null }));
+              return;
+            }
+            fetch(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9'
+              }
+            })
+            .then(r => r.text())
+            .then(html => {
+              const match = html.match(/\/watch\?v=([a-zA-Z0-9_-]{11})/);
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ videoId: match ? match[1] : null }));
+            })
+            .catch(err => {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ videoId: null, error: err.message }));
+            });
+            return;
+          }
           next();
         });
       }

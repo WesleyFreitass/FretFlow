@@ -13,33 +13,33 @@ export const GUITAR_HERO_DIFFICULTIES = [
   {
     id: 1,
     key: 'level1',
-    name: 'Nível 1: Cordas Soltas / Baixo da Cifra',
+    name: 'Nível 1: Pulso & Base (25% das Notas)',
     tag: 'Iniciante',
-    description: 'Toque as tônicas e cordas soltas da cifra no tempo da batida.',
+    description: 'Densidade reduzida (1 nota a cada 4): ideal para aprender o ritmo sem se afobar.',
     icon: 'Radio'
   },
   {
     id: 2,
     key: 'level2',
-    name: 'Nível 2: Power Chords da Música',
+    name: 'Nível 2: Esqueleto do Riff (50% das Notas)',
     tag: 'Intermediário',
-    description: 'Toque os bicordes de rock (E5, G5, D5, C5, A5) descendo na esteira.',
+    description: 'Corta notas rápidas de passagem e foca nas notas estruturais do riff.',
     icon: 'Flame'
   },
   {
     id: 3,
     key: 'level3',
-    name: 'Nível 3: Acordes Completos da Cifra',
-    tag: 'Avançado',
-    description: 'Troque todos os acordes cheios (C, G, D, Em, Am) no tempo exato da música.',
+    name: 'Nível 3: Tablatura 100% Real (Oficial)',
+    tag: 'Tablatura Real',
+    description: '100% de todas as notas, cordas e casas reais da tablatura da música.',
     icon: 'Sparkles'
   },
   {
     id: 4,
     key: 'level4',
-    name: 'Nível 4: Solos & Riffs de Tablatura',
+    name: 'Nível 4: Guitar God (Precisão Pro)',
     tag: 'Guitar God',
-    description: 'Solos nota a nota com casas e cordas exatas de tablatura.',
+    description: '100% das notas reais com janela de acerto rigorosa para performance de mestre.',
     icon: 'Zap'
   }
 ];
@@ -53,7 +53,7 @@ export const GUITAR_HERO_SONGS = [
     genre: 'Classic Rock / Ballad',
     bpm: 70,
     startOffsetSec: 0.5,
-    youtubeId: 'k1-TrAvp_xs',
+    youtubeId: 'f8OHybVhQwc',
     durationSec: 330,
     coverColor: 'from-amber-600 via-orange-700 to-slate-900',
     charts: {

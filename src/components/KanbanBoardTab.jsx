@@ -34,8 +34,8 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-const KANBAN_VERSION_KEY = 'fretflow_kanban_version_v9';
-const KANBAN_DATA_KEY = 'fretflow_kanban_data_v9';
+const KANBAN_VERSION_KEY = 'fretflow_kanban_version_v10';
+const KANBAN_DATA_KEY = 'fretflow_kanban_data_v10';
 
 export default function KanbanBoardTab() {
   // 1. Persistent Ideas State with definitive version check & purge
@@ -53,7 +53,9 @@ export default function KanbanBoardTab() {
         'fretflow_kanban_version_v7',
         'fretflow_kanban_data_v7',
         'fretflow_kanban_version_v8',
-        'fretflow_kanban_data_v8'
+        'fretflow_kanban_data_v8',
+        'fretflow_kanban_version_v9',
+        'fretflow_kanban_data_v9'
       ];
       legacyKeys.forEach(k => {
         try { localStorage.removeItem(k); } catch (_) {}
@@ -63,8 +65,8 @@ export default function KanbanBoardTab() {
       const savedData = localStorage.getItem(KANBAN_DATA_KEY);
 
       // If version is missing or outdated, load fresh INITIAL_IDEAS directly from code
-      if (savedVersion !== '9' || !savedData) {
-        localStorage.setItem(KANBAN_VERSION_KEY, '9');
+      if (savedVersion !== '10' || !savedData) {
+        localStorage.setItem(KANBAN_VERSION_KEY, '10');
         localStorage.setItem(KANBAN_DATA_KEY, JSON.stringify(INITIAL_IDEAS));
         return INITIAL_IDEAS;
       }
@@ -82,7 +84,7 @@ export default function KanbanBoardTab() {
   // Auto-sync state to local disk (/api/kanban) in real-time
   useEffect(() => {
     try {
-      localStorage.setItem(KANBAN_VERSION_KEY, '9');
+      localStorage.setItem(KANBAN_VERSION_KEY, '10');
       localStorage.setItem(KANBAN_DATA_KEY, JSON.stringify(ideas));
 
       // Post to Vite Bridge API

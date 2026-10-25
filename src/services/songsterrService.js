@@ -3,7 +3,7 @@
  * Searches Songsterr's catalog, downloads tracks, and converts them into AlphaTex for AlphaTab.
  */
 
-const CLOUDFRONT_HOSTS = ['dqsljvtekg760', 'd34shlm8p2ums2', 'd3cqchs6g3b5ew'];
+const CLOUDFRONT_HOSTS = ['dqsljvtekg760', 'd34shlm8p2ums2', 'd3cqchs6g3b5ew', 'd3d3l6a6rcgkaf'];
 
 // Standard note durations supported by AlphaTab
 const ALLOWED_DURATIONS = [1, 2, 4, 8, 16, 32, 64];
@@ -19,6 +19,33 @@ function getValidDuration(d) {
     }
   }
   return closest;
+}
+
+/**
+ * Formats a single Songsterr note into AlphaTex notation
+ * @param {object} n
+ * @returns {string|null} e.g. "12.3" or "x.1"
+ */
+function formatSongsterrNote(n) {
+  if (!n || n.rest) return null;
+  
+  // Songsterr string: 0 = high E, 1 = B, 2 = G, 3 = D, 4 = A, 5 = low E
+  // AlphaTex string: 1 = high E, 2 = B, 3 = G, 4 = D, 5 = A, 6 = low E
+  const strNum = Math.max(1, Math.min(6, (typeof n.string === 'number' ? n.string : 0) + 1));
+  
+  let fret = null;
+  if (typeof n.fret === 'number' && !isNaN(n.fret)) {
+    fret = n.fret >= 0 ? n.fret : 'x';
+  } else if (n.dead) {
+    fret = 'x';
+  } else if (n.ghost) {
+    fret = (typeof n.ghost === 'number' && n.ghost >= 0) ? n.ghost : 'x';
+  } else {
+    // Note has no valid fret number and is not dead - omit
+    return null;
+  }
+
+  return `${fret}.${strNum}`;
 }
 
 /**
@@ -81,7 +108,10 @@ export async function fetchSongMeta(songId) {
 export async function fetchTrackPart(songId, revisionId, image, partIndex) {
   for (const host of CLOUDFRONT_HOSTS) {
     try {
-      const url = `https://${host}.cloudfront.net/${songId}/${revisionId}/${image}/${partIndex}.json`;
+      let url = `https://${host}.cloudfront.net/${songId}/${revisionId}/${image}/${partIndex}.json`;
+      if (!image) {
+        url = `https://d3rrfvx08uyjp1.cloudfront.net/part/${revisionId}/${partIndex}`;
+      }
       const res = await fetch(url);
       if (res.ok) {
         return await res.json();
@@ -147,17 +177,17 @@ export function convertSongsterrToAlphaTex(meta, part) {
         currentDuration = dur;
       }
 
-      if (!beat.notes || beat.notes.length === 0 || beat.rest) {
+      // Filter and format notes safely
+      const validNotes = (beat.notes || [])
+        .map(formatSongsterrNote)
+        .filter(Boolean);
+
+      if (validNotes.length === 0 || beat.rest) {
         tex += `${durPrefix}r `;
-      } else if (beat.notes.length === 1) {
-        const n = beat.notes[0];
-        // Songsterr string: 0 = high E, 1 = B, 2 = G, 3 = D, 4 = A, 5 = low E
-        // AlphaTex string: 1 = high E, 2 = B, 3 = G, 4 = D, 5 = A, 6 = low E
-        const strNum = (n.string ?? 0) + 1;
-        tex += `${durPrefix}${n.fret}.${strNum} `;
+      } else if (validNotes.length === 1) {
+        tex += `${durPrefix}${validNotes[0]} `;
       } else {
-        const chordNotes = beat.notes.map(n => `${n.fret}.${(n.string ?? 0) + 1}`).join(' ');
-        tex += `${durPrefix}(${chordNotes}) `;
+        tex += `${durPrefix}(${validNotes.join(' ')}) `;
       }
     }
 
@@ -172,7 +202,7 @@ export function convertSongsterrToAlphaTex(meta, part) {
  * Loads a full song track from Songsterr and prepares it for AlphaTab
  * @param {number|string} songId
  * @param {number} [targetTrackIndex]
- * @returns {Promise<{ alphaTex: string, title: string, artist: string, tempo: number, trackName: string, songId: number }>}
+ * @returns {Promise<{ alphaTex: string, title: string, artist: string, tempo: number, trackName: string, songId: number, tracks: Array }>}
  */
 export async function loadSongsterrTab(songId, targetTrackIndex = null) {
   const meta = await fetchSongMeta(songId);

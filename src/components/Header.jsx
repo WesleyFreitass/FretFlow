@@ -82,18 +82,6 @@ export default function Header({
           <Sparkles className="w-4 h-4" />
           <span>Treino de Acordes</span>
         </button>
-
-        <button
-          onClick={() => setActiveTab('youtube')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all ${
-            activeTab === 'youtube'
-              ? 'bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-md shadow-rose-500/30'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-          }`}
-        >
-          <Video className="w-4 h-4" />
-          <span>YouTube & Músicas</span>
-        </button>
       </nav>
 
       {/* Audio Hub & Settings */}
