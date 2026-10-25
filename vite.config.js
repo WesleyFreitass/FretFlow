@@ -56,7 +56,14 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
-    strictPort: true
+    strictPort: true,
+    proxy: {
+      '/api/songsterr': {
+        target: 'https://www.songsterr.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/songsterr/, '/api')
+      }
+    }
   },
   preview: {
     port: 5173,
